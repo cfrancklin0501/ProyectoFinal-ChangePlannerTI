@@ -23,4 +23,49 @@
           <p><label for="idArea">ID área</label><br>
             <input type="text" id="idArea" name="idArea"></p>
         </fieldset>
+        
+        // datos de la actividad a realizar en la infraestructura
+         <fieldset>
+          <legend>Datos del cambio</legend>
+          <p><label for="idSolicitud">ID solicitud</label><br>
+            <input type="text" id="idSolicitud" name="idSolicitud"></p>
+          <p><label for="rfc">RFC</label><br>
+            <input type="text" id="rfc" name="rfc"></p>
+          <p><label for="rfcTipo">RFC local o regional</label><br>
+            <select id="rfcTipo" name="rfcTipo">
+              <option>Local</option>
+              <option>Regional</option>
+            </select></p>
+          <p><label for="idRfcBi">ID-RFC-BI</label><br>
+            <input type="text" id="idRfcBi" name="idRfcBi"></p>
+          <p><label for="actividad">Actividad</label><br>
+            <textarea id="actividad" name="actividad" rows="3" cols="50" required></textarea></p>
+          <p><label for="clasificacion">Clasificación</label><br>
+            <input type="text" id="clasificacion" name="clasificacion" list="lista-clasificacion">
+            <datalist id="lista-clasificacion">
+              <option value="Estándar">
+              <option value="Normal">
+              <option value="Emergencia">
+            </datalist></p>
+          <p><label for="resultado">Resultado</label><br>
+            <select id="resultado" name="resultado">
+              <option>Pendiente</option>
+              <option>Exitoso</option>
+              <option>Fallido</option>
+              <option>Revertido</option>
+            </select></p>
+          <p><label for="confirmacion">Confirmación</label><br>
+            <select id="confirmacion" name="confirmacion">
+              <option>No</option>
+              <option>Sí</option>
+            </select></p>
+          <p><label for="firmadas">Firmadas</label><br>
+            <select id="firmadas" name="firmadas">
+              <option>No</option>
+              <option>Sí</option>
+            </select></p>
+          <p><label for="observaciones">Observaciones</label><br>
+            <textarea id="observaciones" name="observaciones" rows="3" cols="50"></textarea></p>
+        </fieldset>
+
 </main>
