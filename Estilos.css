@@ -1,0 +1,370 @@
+/* ==========================================================================
+   ChangePlanner TI · estilos.css
+   Hoja de estilos compartida por las tres páginas del proyecto.
+
+   Páginas y secciones a las que pertenece cada bloque:
+     Index.html              → #registro, #form-cambio, fieldset, formularios
+     CambiosRegistrados.html → #cambios, tabla de 18 columnas
+     CambiosSemanal.html     → #resumen, totales, tabla por usuario, #form-aprobacion
+     Las tres páginas        → variables, base, header, nav, botones
+
+   Paleta:
+     Azul innovación  #01C2D4  → acentos, bordes, enlace activo
+     Naranja          #FFB91D  → botones de acción principal, resaltados
+     Azul oscuro      #013864  → encabezado, títulos, texto de énfasis
+   ========================================================================== */
+
+
+/* 1. VARIABLES · todas las páginas
+   Los colores se definen una sola vez para cambiarlos desde aquí. */
+:root {
+  --azul-innovacion: #01C2D4;
+  --naranja: #FFB91D;
+  --azul-oscuro: #013864;
+
+  --fondo: #F2F8FA;          /* fondo general, derivado del azul innovación */
+  --superficie: #FFFFFF;     /* tarjetas y tablas */
+  --texto: #1B2B38;
+  --borde: #CFE3E8;
+
+  --radio: 8px;
+  --sombra: 0 2px 8px rgba(1, 56, 100, 0.12);
+}
+
+
+/* 2. BASE · todas las páginas */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--texto);
+  background: var(--fondo);
+}
+
+h2 {
+  margin-top: 0;
+  color: var(--azul-oscuro);
+  border-bottom: 3px solid var(--azul-innovacion);
+  padding-bottom: 0.4rem;
+}
+
+h3 {
+  color: var(--azul-oscuro);
+  margin-top: 1.75rem;
+}
+
+
+/* 3. ENCABEZADO · todas las páginas
+   Barra azul oscuro con título, subtítulo y menú. */
+header {
+  background: var(--azul-oscuro);
+  color: #FFFFFF;
+  padding: 1.25rem 2rem 0;
+  border-bottom: 4px solid var(--naranja);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  letter-spacing: 0.5px;
+}
+
+header p {
+  margin: 0.25rem 0 1rem;
+  color: var(--azul-innovacion);
+}
+
+
+/* 4. MENÚ DE NAVEGACIÓN · todas las páginas
+   Enlaces entre Index.html, CambiosRegistrados.html y CambiosSemanal.html. */
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+nav a {
+  color: #FFFFFF;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radio) var(--radio) 0 0;
+  font-weight: 600;
+}
+
+nav a:hover,
+nav a:focus-visible {
+  background: rgba(1, 194, 212, 0.25);
+  outline: none;
+}
+
+/* Página actual: agregar aria-current="page" al enlace correspondiente */
+nav a[aria-current="page"] {
+  background: var(--naranja);
+  color: var(--azul-oscuro);
+}
+
+
+/* 5. CONTENEDORES DE SECCIÓN · todas las páginas
+   Cada sección (#registro, #cambios, #resumen) se muestra como tarjeta. */
+main,
+body > section {
+  max-width: 1100px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+main section,
+body > section {
+  background: var(--superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.5rem 2rem;
+}
+
+
+/* 6. FORMULARIO DE REGISTRO · Index.html (#registro, #form-cambio)
+   Grupos de campos "Datos del solicitante" y "Datos del cambio". */
+fieldset {
+  border: 1px solid var(--borde);
+  border-left: 5px solid var(--azul-innovacion);
+  border-radius: var(--radio);
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.5rem 0.5rem;
+}
+
+legend {
+  padding: 0 0.6rem;
+  font-weight: 700;
+  color: var(--azul-oscuro);
+}
+
+label {
+  font-weight: 600;
+  color: var(--azul-oscuro);
+}
+
+input[type="text"],
+input[type="date"],
+input[type="week"],
+select,
+textarea {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 0.25rem;
+  padding: 0.5rem 0.7rem;
+  font: inherit;
+  color: var(--texto);
+  background: #FFFFFF;
+  border: 1px solid #9DB9C2;
+  border-radius: 6px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 3px solid var(--azul-innovacion);
+  outline-offset: 1px;
+  border-color: var(--azul-oscuro);
+}
+
+
+/* 7. BOTONES · todas las páginas
+   Principal (naranja): Registrar cambio, Aprobar semana.
+   Secundario (borde azul): Exportar CSV, Imprimir, Rechazar semana. */
+button {
+  font: inherit;
+  font-weight: 700;
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+button[type="submit"] {
+  background: var(--naranja);
+  color: var(--azul-oscuro);
+  border: 2px solid var(--naranja);
+}
+
+button[type="submit"]:hover {
+  background: #E9A400;
+  border-color: #E9A400;
+}
+
+button[type="button"] {
+  background: transparent;
+  color: var(--azul-oscuro);
+  border: 2px solid var(--azul-oscuro);
+}
+
+button[type="button"]:hover {
+  background: var(--azul-oscuro);
+  color: #FFFFFF;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--azul-innovacion);
+  outline-offset: 2px;
+}
+
+
+/* 8. TABLA DE CAMBIOS REGISTRADOS · CambiosRegistrados.html (#cambios)
+   Tiene 18 columnas, por eso la sección permite desplazamiento horizontal. */
+#cambios {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--superficie);
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  border: 1px solid var(--borde);
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+}
+
+thead th {
+  background: var(--azul-oscuro);
+  color: #FFFFFF;
+  white-space: nowrap;
+  border-color: var(--azul-oscuro);
+}
+
+tbody tr:nth-child(even) {
+  background: #F2F8FA;
+}
+
+tbody tr:hover {
+  background: rgba(1, 194, 212, 0.12);
+}
+
+/* Fila de "Aún no hay cambios..." / "Sin datos...": celda con colspan */
+td[colspan] {
+  text-align: center;
+  font-style: italic;
+  color: #5A6B76;
+  padding: 1.5rem;
+}
+
+
+/* 9. RESUMEN SEMANAL · CambiosSemanal.html (#resumen)
+   Selector de semana, botones de exportación y tarjetas de totales. */
+#resumen > p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#resumen > p input[type="week"] {
+  width: auto;
+  margin-top: 0;
+}
+
+/* Totales de la semana: lista convertida en tarjetas */
+#resumen ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+#resumen li {
+  background: var(--fondo);
+  border-top: 4px solid var(--azul-innovacion);
+  border-radius: var(--radio);
+  padding: 0.75rem 1rem;
+  color: var(--azul-oscuro);
+  font-weight: 600;
+}
+
+#resumen li strong {
+  display: block;
+  font-size: 1.75rem;
+  color: var(--azul-oscuro);
+}
+
+/* Total "Por aprobar" resaltado en naranja */
+#resumen li:nth-child(2) {
+  border-top-color: var(--naranja);
+}
+
+
+/* 10. APROBACIÓN DE GERENCIA · CambiosSemanal.html (#form-aprobacion) */
+#form-aprobacion {
+  background: var(--fondo);
+  border: 1px solid var(--borde);
+  border-left: 5px solid var(--naranja);
+  border-radius: var(--radio);
+  padding: 1rem 1.5rem 1.25rem;
+}
+
+#form-aprobacion button {
+  margin-right: 0.5rem;
+}
+
+
+/* 11. PANTALLAS PEQUEÑAS · todas las páginas */
+@media (max-width: 600px) {
+  header {
+    padding: 1rem 1rem 0;
+  }
+
+  main section,
+  body > section {
+    padding: 1rem;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  select,
+  textarea {
+    max-width: 100%;
+  }
+}
+
+
+/* 12. IMPRESIÓN · CambiosSemanal.html
+   Para el botón "Imprimir o guardar PDF": oculta menú y botones. */
+@media print {
+  nav,
+  button {
+    display: none;
+  }
+
+  body {
+    background: #FFFFFF;
+  }
+
+  header {
+    background: #FFFFFF;
+    color: #000000;
+    border-bottom: 2px solid #000000;
+  }
+
+  header p {
+    color: #000000;
+  }
+
+  main section,
+  body > section {
+    box-shadow: none;
+  }
+}
