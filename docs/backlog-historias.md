@@ -64,3 +64,27 @@
 - **Dado** que la semana ya está aprobada, **cuando** vuelvo a abrirla, **entonces** veo quién aprobó y cuándo, y el botón Aprobar ya no aparece.
 
 ---
+
+## Corte 3 · Versión completa
+
+### H12 · Indicar el tipo de RFC
+**Como** analista TI **quiero** marcar si el RFC es local o regional y su ID-RFC-BI **para** clasificar el cambio correctamente.
+- **Dado** que estoy en el formulario, **cuando** elijo Local o Regional e ingreso el ID-RFC-BI, **entonces** ambos se guardan con el cambio.
+
+### H13 · Editar un registro
+**Como** analista TI **quiero** corregir un cambio **para** arreglar errores de captura.
+- **Dado** que un cambio no está aprobado, **cuando** edito sus campos y guardo, **entonces** se actualiza el registro.
+- **Dado** que el cambio pertenece a una semana aprobada, **cuando** intento editarlo, **entonces** el sistema lo impide y me explica por qué.
+
+### H14 · Exportar el resumen a PDF
+**Como** gerente **quiero** imprimir o exportar el resumen **para** presentarlo en reunión.
+- **Dado** que veo el resumen de una semana, **cuando** presiono Exportar, **entonces** obtengo una versión lista para imprimir o guardar como PDF.
+
+### H15 · Rechazar con una nota
+**Como** gerente **quiero** devolver el resumen con un comentario **para** que los analistas lo corrijan.
+- **Dado** que veo un resumen pendiente, **cuando** presiono Rechazar y escribo una nota, **entonces** el resumen queda como rechazado y la nota es visible para los analistas.
+
+### H16 · Administrar catálogos
+**Como** administrador **quiero** mantener las áreas y clasificaciones **para** que los formularios usen valores consistentes.
+- **Dado** que estoy en administración, **cuando** agrego o edito un Área con su ID Área, **entonces** aparece como opción en el formulario.
+- **Dado** que agrego una clasificación, **cuando** abro el formulario, **entonces** puedo elegirla.
