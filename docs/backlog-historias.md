@@ -1,6 +1,6 @@
 # Backlog · ChangePlannerTI
 
-## Corte 1 · MVP (etiqueta `mvp`)
+## Corte 1 · MVP 
 
 ### H1 · Ver el formulario de registro
 **Como** analista TI **quiero** abrir la página y ver el formulario de registro **para** empezar a documentar un cambio.
@@ -33,5 +33,34 @@
 **Como** analista TI **quiero** abrir un cambio y ver todos sus campos **para** revisar la información completa.
 - **Dado** que estoy en la lista, **cuando** selecciono un cambio, **entonces** veo todos sus campos.
 - **Dado** que estoy en el detalle, **cuando** presiono Volver, **entonces** regreso a la lista.
+
+---
+
+## Corte 2 · Resumen y aprobación 
+
+### H7 · Registrar el resultado de un cambio
+**Como** analista TI **quiero** indicar el resultado y la confirmación del cambio **para** saber si salió bien.
+- **Dado** que abro un cambio existente, **cuando** completo Resultado, Confirmación y Observaciones y guardo, **entonces** esos datos aparecen en el detalle.
+- **Dado** que el cambio ya tiene resultado, **cuando** veo la lista, **entonces** se refleja en una columna.
+
+### H8 · Filtrar cambios
+**Como** analista TI **quiero** filtrar la lista **para** encontrar cambios rápido.
+- **Dado** que estoy en la lista, **cuando** filtro por fecha, área, usuario o clasificación, **entonces** solo veo las filas que coinciden.
+- **Dado** que hay filtros activos, **cuando** presiono Limpiar, **entonces** vuelvo a ver todos los cambios.
+
+### H9 · Elegir la semana a resumir
+**Como** gerente **quiero** elegir una semana **para** revisar lo ocurrido en ese periodo.
+- **Dado** que abro la pantalla de resumen, **cuando** elijo una semana, **entonces** se toma el rango de lunes a domingo.
+- **Dado** que no elijo semana, **cuando** abro el resumen, **entonces** se muestra la semana actual por defecto.
+
+### H10 · Ver el resumen semanal
+**Como** gerente **quiero** ver un resumen de la semana **para** presentarlo y decidir su aprobación.
+- **Dado** que elegí una semana con cambios, **cuando** se genera el resumen, **entonces** veo el total de cambios y el conteo por área, clasificación y resultado.
+- **Dado** que la semana no tiene cambios, **cuando** se genera el resumen, **entonces** veo el mensaje "Sin cambios en esta semana".
+
+### H11 · Aprobar el resumen semanal
+**Como** gerente **quiero** aprobar el resumen **para** dejar constancia formal.
+- **Dado** que veo el resumen de una semana, **cuando** presiono Aprobar e ingreso mi nombre, **entonces** se registran Aprobado por y Fecha de Aprobación.
+- **Dado** que la semana ya está aprobada, **cuando** vuelvo a abrirla, **entonces** veo quién aprobó y cuándo, y el botón Aprobar ya no aparece.
 
 ---
