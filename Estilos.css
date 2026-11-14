@@ -368,3 +368,59 @@ td[colspan] {
     box-shadow: none;
   }
 }
+
+/* 13. MENSAJES Y ESTADOS · todas las páginas
+   Avisos de carga, éxito y error que vienen de js/api.js (CP.mostrarMensaje). */
+.mensaje {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radio);
+  border-left: 5px solid var(--azul-innovacion);
+  background: var(--fondo);
+  color: var(--azul-oscuro);
+  font-weight: 600;
+}
+
+.mensaje.ok {
+  border-left-color: #2E8B57;
+  background: #EAF7EF;
+}
+
+.mensaje.error {
+  border-left-color: #C0392B;
+  background: #FDECEA;
+  color: #7B241C;
+}
+
+.mensaje[hidden] {
+  display: none;
+}
+
+.ayuda {
+  font-size: 0.85rem;
+  color: #5A6B76;
+}
+
+.ayuda[hidden] {
+  display: none;
+}
+
+input[readonly] {
+  background: #EEF4F6;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#estado-semana {
+  font-weight: 600;
+  color: var(--azul-oscuro);
+}
+
+@media print {
+  .mensaje {
+    display: none;
+  }
+}
