@@ -11,16 +11,19 @@
 <header>
   <h1>ChangePlanner TI</h1>
   <p>Control de cambios en la infraestructura de TI</p>
-  <nav>
-    <a href="index.html">Registrar cambio</a>
-    <a href="CambiosRegistrados.html" aria-current="page">Cambios registrados</a>
-    <a href="CambiosSemanal.html">Resumen semanal</a>
-  </nav>
+  <nav aria-label="Menú principal"></nav>
 </header>
 
-<main>
+<main hidden>
   <section id="cambios">
     <h2>Cambios registrados</h2>
+    <form id="filtro-semana" class="filtros">
+      <p><label for="semana">Semana</label><br>
+        <input type="week" id="semana" name="semana"></p>
+      <p class="filtros-botones">
+        <button type="button" id="btn-todas">Ver todas las semanas</button>
+      </p>
+    </form>
     <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
     <table>
       <thead>
@@ -43,6 +46,7 @@
           <th scope="col">Firmadas</th>
           <th scope="col">Observaciones</th>
           <th scope="col">Estado</th>
+          <th scope="col" class="solo-admin" hidden>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -52,9 +56,46 @@
       </tbody>
     </table>
   </section>
+
+  <!-- Editar cambio (solo Administrador) -->
+  <dialog id="dlg-editar" aria-labelledby="dlg-editar-titulo">
+    <form id="form-editar" method="dialog">
+      <h3 id="dlg-editar-titulo">Editar cambio</h3>
+      <p class="ayuda" id="editar-resumen"></p>
+      <p><label for="ed-actividad">Actividad</label><br>
+        <textarea id="ed-actividad" name="actividad" rows="3" required minlength="10" maxlength="1000"></textarea></p>
+      <p><label for="ed-clasificacion">Clasificación</label><br>
+        <select id="ed-clasificacion" name="clasificacion" required></select></p>
+      <p><label for="ed-resultado">Resultado</label><br>
+        <select id="ed-resultado" name="resultado" required></select></p>
+      <p><label for="ed-confirmacion">Confirmación</label><br>
+        <select id="ed-confirmacion" name="confirmacion"><option>No</option><option>Sí</option></select></p>
+      <p><label for="ed-firmadas">Firmadas</label><br>
+        <select id="ed-firmadas" name="firmadas"><option>No</option><option>Sí</option></select></p>
+      <p><label for="ed-observaciones">Observaciones</label><br>
+        <textarea id="ed-observaciones" name="observaciones" rows="3" maxlength="1000"></textarea></p>
+      <p id="editar-mensaje" class="mensaje error" role="alert" hidden></p>
+      <button type="submit" value="guardar">Guardar cambios</button>
+      <button type="button" class="btn-cerrar">Cancelar</button>
+    </form>
+  </dialog>
+
+  <!-- Eliminar cambio (solo Administrador) -->
+  <dialog id="dlg-eliminar" aria-labelledby="dlg-eliminar-titulo">
+    <form id="form-eliminar" method="dialog">
+      <h3 id="dlg-eliminar-titulo">Eliminar cambio</h3>
+      <p id="eliminar-resumen"></p>
+      <p><label for="el-motivo">Motivo de la eliminación</label><br>
+        <textarea id="el-motivo" name="motivo" rows="2" required minlength="5" maxlength="300"></textarea></p>
+      <p id="eliminar-mensaje" class="mensaje error" role="alert" hidden></p>
+      <button type="submit" value="eliminar" class="btn-peligro">Eliminar</button>
+      <button type="button" class="btn-cerrar">Cancelar</button>
+    </form>
+  </dialog>
 </main>
 
 <script src="js/config.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/api.js"></script>
 <script src="js/registrados.js"></script>
 </body>
