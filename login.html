@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión · ChangePlanner TI</title>
+  <link rel="stylesheet" href="Estilos.css">
+</head>
+<body class="pagina-acceso">
+
+<header>
+  <h1>ChangePlanner TI</h1>
+  <p>Control de cambios en la infraestructura de TI</p>
+</header>
+
+<main>
+  <section id="acceso">
+    <div class="pestanas" role="tablist" aria-label="Opciones de acceso">
+      <button type="button" role="tab" id="tab-entrar" aria-controls="form-entrar" aria-selected="true">Iniciar sesión</button>
+      <button type="button" role="tab" id="tab-registro" aria-controls="form-registro" aria-selected="false">Crear cuenta</button>
+      <button type="button" role="tab" id="tab-recuperar" aria-controls="form-recuperar" aria-selected="false">¿Olvidaste tu contraseña?</button>
+    </div>
+
+    <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
+
+    <!-- Iniciar sesión -->
+    <form id="form-entrar" role="tabpanel" aria-labelledby="tab-entrar">
+      <h2>Iniciar sesión</h2>
+      <p><label for="entrar-correo">Correo</label><br>
+        <input type="email" id="entrar-correo" name="correo" required autocomplete="username"></p>
+      <p><label for="entrar-contrasena">Contraseña</label><br>
+        <input type="password" id="entrar-contrasena" name="contrasena" required autocomplete="current-password"></p>
+      <button type="submit">Entrar</button>
+    </form>
+
+    <!-- Registro: toda cuenta nueva queda como Visualizador -->
+    <form id="form-registro" role="tabpanel" aria-labelledby="tab-registro" hidden>
+      <h2>Crear cuenta</h2>
+      <p class="ayuda">Las cuentas nuevas tienen el rol <strong>Visualizador</strong>. Un administrador puede darte otro rol.</p>
+      <p><label for="registro-nombre">Nombre completo</label><br>
+        <input type="text" id="registro-nombre" name="nombre" required minlength="3" maxlength="80" autocomplete="name"></p>
+      <p><label for="registro-correo">Correo</label><br>
+        <input type="email" id="registro-correo" name="correo" required autocomplete="email"></p>
+      <p><label for="registro-contrasena">Contraseña</label><br>
+        <input type="password" id="registro-contrasena" name="contrasena" required minlength="8" autocomplete="new-password"><br>
+        <span class="ayuda">Mínimo 8 caracteres, con letras y números.</span></p>
+      <p><label for="registro-confirmar">Repite la contraseña</label><br>
+        <input type="password" id="registro-confirmar" name="confirmar" required minlength="8" autocomplete="new-password"></p>
+      <button type="submit">Crear cuenta</button>
+    </form>
+
+    <!-- Recuperación de contraseña: envía un enlace a restablecer.html -->
+    <form id="form-recuperar" role="tabpanel" aria-labelledby="tab-recuperar" hidden>
+      <h2>Recuperar contraseña</h2>
+      <p class="ayuda">Te enviaremos un enlace para crear una contraseña nueva.</p>
+      <p><label for="recuperar-correo">Correo</label><br>
+        <input type="email" id="recuperar-correo" name="correo" required autocomplete="email"></p>
+      <button type="submit">Enviar enlace</button>
+    </form>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>

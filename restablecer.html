@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nueva contraseña · ChangePlanner TI</title>
+  <link rel="stylesheet" href="Estilos.css">
+</head>
+<body class="pagina-acceso">
+
+<header>
+  <h1>ChangePlanner TI</h1>
+  <p>Control de cambios en la infraestructura de TI</p>
+</header>
+
+<main>
+  <section id="acceso">
+    <h2>Crear una contraseña nueva</h2>
+    <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
+
+    <form id="form-restablecer">
+      <p><label for="contrasena">Contraseña nueva</label><br>
+        <input type="password" id="contrasena" name="contrasena" required minlength="8" autocomplete="new-password"><br>
+        <span class="ayuda">Mínimo 8 caracteres, con letras y números.</span></p>
+      <p><label for="confirmar">Repite la contraseña</label><br>
+        <input type="password" id="confirmar" name="confirmar" required minlength="8" autocomplete="new-password"></p>
+      <button type="submit">Guardar contraseña</button>
+    </form>
+
+    <p><a href="login.html">Volver a iniciar sesión</a></p>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+// restablecer.html · llega desde el enlace del correo de recuperación (la sesión temporal viene en el #hash)
+(function () {
+  "use strict";
+  const AUTH = window.AUTH;
+  const form = document.getElementById("form-restablecer");
+  const msg = document.getElementById("mensaje");
+  const boton = form.querySelector('button[type="submit"]');
+
+  function mostrar(texto, tipo) {
+    msg.textContent = texto;
+    msg.className = "mensaje " + (tipo || "info");
+    msg.hidden = false;
+  }
+
+  const r = AUTH.leerSesionDeUrl();
+  if (r && r.error) {
+    mostrar(r.error, "error");
+    boton.disabled = true;
+  } else if (!AUTH.leerSesion()) {
+    mostrar("Abre esta página desde el enlace que te enviamos por correo. Si expiró, pide uno nuevo en «¿Olvidaste tu contraseña?».", "error");
+    boton.disabled = true;
+  }
+
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const e = form.elements;
+    if (e.contrasena.value !== e.confirmar.value) { mostrar("Las contraseñas no coinciden.", "error"); return; }
+    if (!/[A-Za-z]/.test(e.contrasena.value) || !/\d/.test(e.contrasena.value)) {
+      mostrar("La contraseña debe tener letras y números.", "error");
+      return;
+    }
+    boton.disabled = true;
+    mostrar("Guardando…", "info");
+    try {
+      await AUTH.cambiarContrasena(e.contrasena.value);
+      form.reset();
+      form.hidden = true;
+      mostrar("Contraseña actualizada. Ya puedes usar la aplicación.", "ok");
+      const a = document.createElement("a");
+      a.href = "index.html";
+      a.textContent = "Ir al inicio";
+      msg.after(a);
+    } catch (err) {
+      mostrar(err.message, "error");
+      boton.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
