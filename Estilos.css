@@ -1,9 +1,12 @@
 /* ==========================================================================
    ChangePlanner TI · estilos.css
-   Hoja de estilos compartida por las tres páginas del proyecto.
+   Hoja de estilos compartida por todas las páginas del proyecto.
 
    Páginas y secciones a las que pertenece cada bloque:
-     Index.html              → #registro, #form-cambio, fieldset, formularios
+     index.html              → #tablero (bienvenida gerencial, bloque 14)
+     login.html, restablecer.html → #acceso (bloque 14)
+     Usuarios.html           → #usuarios (bloque 14)
+     RegistrarCambio.html    → #registro, #form-cambio, fieldset, formularios
      CambiosRegistrados.html → #cambios, tabla de 18 columnas
      CambiosSemanal.html     → #resumen, totales, tabla por usuario, #form-aprobacion
      Las tres páginas        → variables, base, header, nav, botones
@@ -150,6 +153,8 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
+input[type="password"],
 input[type="date"],
 input[type="week"],
 select,
@@ -421,6 +426,324 @@ button:disabled {
 
 @media print {
   .mensaje {
+    display: none;
+  }
+}
+
+
+/* ==========================================================================
+   14. SEMANA 4 · sesión, acceso, tablero, usuarios y diálogos
+   ========================================================================== */
+
+/* Usuario conectado y botón de salir · todas las páginas con sesión */
+header {
+  position: relative;
+}
+
+.sesion {
+  position: absolute;
+  top: 1.1rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.sesion .rol {
+  color: var(--naranja);
+}
+
+header .btn-salir {
+  padding: 0.35rem 0.8rem;
+  color: #FFFFFF;
+  border-color: var(--azul-innovacion);
+}
+
+header .btn-salir:hover {
+  background: var(--azul-innovacion);
+  color: var(--azul-oscuro);
+}
+
+/* Inicio de sesión, registro y recuperación · login.html, restablecer.html */
+.pagina-acceso main {
+  max-width: 520px;
+}
+
+.pestanas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-bottom: 3px solid var(--azul-innovacion);
+  margin-bottom: 1.25rem;
+}
+
+.pestanas button[role="tab"] {
+  border: none;
+  border-radius: var(--radio) var(--radio) 0 0;
+  padding: 0.55rem 0.9rem;
+  color: var(--azul-oscuro);
+  background: transparent;
+}
+
+.pestanas button[aria-selected="true"] {
+  background: var(--azul-oscuro);
+  color: #FFFFFF;
+}
+
+#acceso form h2 {
+  font-size: 1.25rem;
+  border: none;
+  padding: 0;
+}
+
+/* Filtros en una fila · index.html, CambiosRegistrados.html */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.25rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.filtros p {
+  margin: 0.25rem 0;
+}
+
+.filtros input,
+.filtros select {
+  width: auto;
+}
+
+.filtros-botones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filtros-botones button {
+  padding: 0.45rem 0.9rem;
+}
+
+/* Indicadores · index.html */
+.kpis {
+  list-style: none;
+  margin: 1rem 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.kpis li {
+  background: var(--fondo);
+  border-top: 4px solid var(--azul-innovacion);
+  border-radius: var(--radio);
+  padding: 0.75rem 1rem;
+  color: var(--azul-oscuro);
+  font-weight: 600;
+}
+
+.kpis li.kpi-exito { border-top-color: #0CA30C; }
+.kpis li.kpi-fallo { border-top-color: #D03B3B; }
+
+.kpis strong {
+  display: block;
+  font-size: 1.9rem;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpis small {
+  display: block;
+  font-weight: 400;
+  color: #5A6B76;
+}
+
+/* Gráfico de barras apiladas por área · index.html */
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--texto);
+  margin-bottom: 0.5rem;
+}
+
+.leyenda i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 0.35rem;
+  vertical-align: -1px;
+}
+
+.grafico {
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.barra-fila {
+  display: grid;
+  grid-template-columns: minmax(120px, 220px) 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.15rem 0;
+}
+
+.barra-etiqueta {
+  font-size: 0.9rem;
+  color: var(--texto);
+  text-align: right;
+}
+
+.barra-pista {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-left: 1px solid #C3C2B7;
+}
+
+.barra {
+  display: flex;
+  gap: 2px;
+  height: 22px;
+  min-width: 4px;
+}
+
+.segmento {
+  min-width: 3px;
+}
+
+.segmento:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.barra-total {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto);
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  background: var(--azul-oscuro);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.tooltip[hidden] {
+  display: none;
+}
+
+#tablero {
+  position: relative;
+}
+
+/* Tablas con desplazamiento y números · index.html, Usuarios.html */
+.tabla-desplazable {
+  overflow-x: auto;
+}
+
+td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+tbody th[scope="row"] {
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid var(--borde);
+  padding: 0.55rem 0.75rem;
+}
+
+tr.fila-total th,
+tr.fila-total td {
+  font-weight: 700;
+  background: #E3F1F5;
+}
+
+#tabla-usuarios input[type="text"],
+#tabla-usuarios select {
+  margin: 0;
+  min-width: 150px;
+}
+
+/* Botones pequeños de acciones y botón de peligro */
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+button.btn-mini {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+button.btn-peligro {
+  background: transparent;
+  color: #A93226;
+  border-color: #A93226;
+}
+
+button.btn-peligro:hover {
+  background: #A93226;
+  border-color: #A93226;
+  color: #FFFFFF;
+}
+
+/* Diálogos de editar y eliminar · CambiosRegistrados.html */
+dialog {
+  width: min(560px, 92vw);
+  border: none;
+  border-top: 5px solid var(--naranja);
+  border-radius: var(--radio);
+  box-shadow: 0 10px 30px rgba(1, 56, 100, 0.3);
+  padding: 1.25rem 1.5rem;
+}
+
+dialog::backdrop {
+  background: rgba(1, 56, 100, 0.45);
+}
+
+dialog h3 {
+  margin-top: 0;
+}
+
+dialog button {
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 700px) {
+  .sesion {
+    position: static;
+    margin-bottom: 0.5rem;
+  }
+
+  .barra-fila {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .barra-etiqueta {
+    text-align: left;
+  }
+}
+
+@media print {
+  .sesion,
+  .filtros-botones,
+  .tooltip {
     display: none;
   }
 }
