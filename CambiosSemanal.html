@@ -11,20 +11,16 @@
 <header>
   <h1>ChangePlanner TI</h1>
   <p>Control de cambios en la infraestructura de TI</p>
-  <nav>
-    <a href="index.html">Registrar cambio</a>
-    <a href="CambiosRegistrados.html">Cambios registrados</a>
-    <a href="CambiosSemanal.html" aria-current="page">Resumen semanal</a>
-  </nav>
+  <nav aria-label="Menú principal"></nav>
 </header>
 
-<main>
+<main hidden>
   <section id="resumen">
     <h2>Resumen semanal</h2>
     <p>
       <label for="semana">Semana</label>
       <input type="week" id="semana" name="semana">
-      <button type="button" id="btn-csv">Exportar CSV</button>
+      <button type="button" id="btn-csv" class="solo-detalle" hidden>Exportar CSV</button>
       <button type="button" id="btn-imprimir">Imprimir o guardar PDF</button>
     </p>
     <p id="estado-semana"></p>
@@ -56,9 +52,11 @@
     </table>
 
     <h3>Aprobación de gerencia</h3>
-    <form id="form-aprobacion">
+    <p id="aviso-aprobacion" class="ayuda" hidden>La aprobación de la semana la registra el rol <strong>Aprobador</strong>.</p>
+    <form id="form-aprobacion" hidden>
       <p><label for="aprobadoPor">Aprobado por</label><br>
-        <input type="text" id="aprobadoPor" name="aprobadoPor" required minlength="3" maxlength="80"></p>
+        <select id="aprobadoPor" name="aprobadoPor" required></select><br>
+        <span class="ayuda">Solo puedes decidir con tu propio usuario; el servidor lo verifica.</span></p>
       <p><label for="fechaAprobacion">Fecha de aprobación</label><br>
         <input type="date" id="fechaAprobacion" name="fechaAprobacion" required></p>
       <p><label for="comentarios">Comentarios</label><br>
@@ -70,6 +68,7 @@
 </main>
 
 <script src="js/config.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/api.js"></script>
 <script src="js/semanal.js"></script>
 </body>

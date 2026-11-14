@@ -1,4 +1,6 @@
 // CambiosSemanal.html · resumen semanal, aprobación de gerencia (flujo central 2), CSV e impresión
+// Lo ven los tres roles. Solo el Aprobador decide; Aprobador y Administrador exportan el CSV (detalle).
+// La base vuelve a comprobarlo en aprobar_semana y en v_cambios_detalle.
 (function () {
   "use strict";
   const CP = window.CP;
@@ -63,8 +65,11 @@
     estadoSemana.textContent = texto;
   }
 
+  let esAprobador = false;
+  let miPerfil = null;
+
   function habilitarAprobacion(resumen) {
-    const puede = !!resumen && resumen.total_cambios > 0 && resumen.estado_semana !== "Aprobada";
+    const puede = esAprobador && !!resumen && resumen.total_cambios > 0 && resumen.estado_semana !== "Aprobada";
     for (const control of form.elements) control.disabled = !puede;
   }
 
@@ -163,14 +168,39 @@
     }
   }
 
+  // Selector "Aprobado por": aprobadores activos, con el usuario actual elegido
+  async function cargarAprobadores() {
+    const sel = form.elements.aprobadoPor;
+    try {
+      const lista = await rpc("listar_aprobadores", {});
+      sel.replaceChildren(...lista.map((a) => {
+        const o = new Option(a.nombre_completo, a.nombre_completo);
+        if (a.id === miPerfil.id) o.selected = true;
+        return o;
+      }));
+    } catch (e) {
+      mostrarMensaje(msg, e.message, "error");
+    }
+  }
+
   form.addEventListener("submit", (ev) => { ev.preventDefault(); decidir("Aprobada"); });
   btnRechazar.addEventListener("click", () => decidir("Rechazada"));
   document.getElementById("btn-csv").addEventListener("click", exportarCsv);
   document.getElementById("btn-imprimir").addEventListener("click", () => window.print());
   inputSemana.addEventListener("change", cargar);
 
-  inputSemana.value = semanaActual();
-  form.elements.fechaAprobacion.value = hoy();
-  form.elements.fechaAprobacion.max = hoy();
-  cargar();
+  window.AUTH.proteger(null).then(async (perfil) => {
+    if (!perfil) return;
+    miPerfil = perfil;
+    esAprobador = perfil.rol === "Aprobador";
+    const veDetalle = perfil.rol === "Aprobador" || perfil.rol === "Administrador";
+    for (const el of document.querySelectorAll(".solo-detalle")) el.hidden = !veDetalle;
+    form.hidden = !esAprobador;
+    document.getElementById("aviso-aprobacion").hidden = esAprobador;
+    inputSemana.value = semanaActual();
+    form.elements.fechaAprobacion.value = hoy();
+    form.elements.fechaAprobacion.max = hoy();
+    if (esAprobador) await cargarAprobadores();
+    cargar();
+  });
 })();
