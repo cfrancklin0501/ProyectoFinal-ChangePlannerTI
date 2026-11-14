@@ -3,60 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ChangePlanner TI</title>
+  <title>Resumen semanal · ChangePlanner TI</title>
   <link rel="stylesheet" href="Estilos.css">
 </head>
+<body>
 
 <header>
-    <h1>ChangePlanner TI</h1>
-    <p>Control de cambios en la infraestructura de TI</p>
-<nav>
-  <a href="index.html">Registrar cambio</a>
-  <a href="CambiosRegistrados.html">Cambios registrados</a>
-</nav>
+  <h1>ChangePlanner TI</h1>
+  <p>Control de cambios en la infraestructura de TI</p>
+  <nav>
+    <a href="index.html">Registrar cambio</a>
+    <a href="CambiosRegistrados.html">Cambios registrados</a>
+    <a href="CambiosSemanal.html" aria-current="page">Resumen semanal</a>
+  </nav>
 </header>
 
-<section id="resumen">
-      <h2>Resumen semanal</h2>
-      <p><label for="semana">Semana</label>
-        <input type="week" id="semana" name="semana">
-        <button type="button">Exportar CSV</button>
-        <button type="button">Imprimir o guardar PDF</button></p>
+<main>
+  <section id="resumen">
+    <h2>Resumen semanal</h2>
+    <p>
+      <label for="semana">Semana</label>
+      <input type="week" id="semana" name="semana">
+      <button type="button" id="btn-csv">Exportar CSV</button>
+      <button type="button" id="btn-imprimir">Imprimir o guardar PDF</button>
+    </p>
+    <p id="estado-semana"></p>
+    <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
 
-      <h3>Totales de la semana</h3>
-      <ul>
-        <li>Cambios registrados: <strong id="total-cambios">0</strong></li>
-        <li>Por aprobar: <strong id="total-pendientes">0</strong></li>
-        <li>Aprobados: <strong id="total-aprobados">0</strong></li>
-        <li>Rechazados: <strong id="total-rechazados">0</strong></li>
-        <li>Sin firmar: <strong id="total-sin-firmar">0</strong></li>
-      </ul>
+    <h3>Totales de la semana</h3>
+    <ul>
+      <li>Cambios registrados: <strong id="total-cambios">0</strong></li>
+      <li>Por aprobar: <strong id="total-pendientes">0</strong></li>
+      <li>Aprobados: <strong id="total-aprobados">0</strong></li>
+      <li>Rechazados: <strong id="total-rechazados">0</strong></li>
+      <li>Sin firmar: <strong id="total-sin-firmar">0</strong></li>
+    </ul>
 
-      <h3>Cambios por usuario</h3>
-      <table border="1">
-        <thead>
-          <tr>
-            <th scope="col">Usuario</th>
-            <th scope="col">Área</th>
-            <th scope="col">Cambios</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="3">Sin datos para esta semana.</td>
-          </tr>
-        </tbody>
-      </table>
+    <h3>Cambios por usuario</h3>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Usuario</th>
+          <th scope="col">Área</th>
+          <th scope="col">Cambios</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo-usuarios">
+        <tr>
+          <td colspan="3">Sin datos para esta semana.</td>
+        </tr>
+      </tbody>
+    </table>
 
-      <h3>Aprobación de gerencia</h3>
-      <form id="form-aprobacion">
-        <p><label for="aprobadoPor">Aprobado por</label><br>
-          <input type="text" id="aprobadoPor" name="aprobadoPor" required></p>
-        <p><label for="fechaAprobacion">Fecha de aprobación</label><br>
-          <input type="date" id="fechaAprobacion" name="fechaAprobacion" required></p>
-        <p><label for="comentarios">Comentarios</label><br>
-          <textarea id="comentarios" name="comentarios" rows="3" cols="50"></textarea></p>
-        <button type="submit">Aprobar semana</button>
-        <button type="button">Rechazar semana</button>
-      </form>
-    </section>
+    <h3>Aprobación de gerencia</h3>
+    <form id="form-aprobacion">
+      <p><label for="aprobadoPor">Aprobado por</label><br>
+        <input type="text" id="aprobadoPor" name="aprobadoPor" required minlength="3" maxlength="80"></p>
+      <p><label for="fechaAprobacion">Fecha de aprobación</label><br>
+        <input type="date" id="fechaAprobacion" name="fechaAprobacion" required></p>
+      <p><label for="comentarios">Comentarios</label><br>
+        <textarea id="comentarios" name="comentarios" rows="3" cols="50" maxlength="1000"></textarea></p>
+      <button type="submit">Aprobar semana</button>
+      <button type="button" id="btn-rechazar">Rechazar semana</button>
+    </form>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/semanal.js"></script>
+</body>
+</html>
