@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inicio · ChangePlanner TI</title>
+  <link rel="stylesheet" href="Estilos.css">
+</head>
+<body>
+
+<header>
+  <h1>ChangePlanner TI</h1>
+  <p>Control de cambios en la infraestructura de TI</p>
+  <nav aria-label="Menú principal"></nav>
+</header>
+
+<main hidden>
+  <section id="tablero">
+    <h2 id="saludo">Bienvenido</h2>
+    <p class="ayuda">Vista gerencial de los cambios en la infraestructura. Elige el período y el área.</p>
+
+    <!-- Filtros: una sola fila sobre los gráficos -->
+    <form id="filtros" class="filtros">
+      <p><label for="desde">Desde</label><br><input type="date" id="desde" name="desde" required></p>
+      <p><label for="hasta">Hasta</label><br><input type="date" id="hasta" name="hasta" required></p>
+      <p><label for="filtro-area">Área</label><br>
+        <select id="filtro-area" name="area"><option value="">Todas las áreas</option></select></p>
+      <p class="filtros-botones">
+        <button type="button" data-periodo="mes">Este mes</button>
+        <button type="button" data-periodo="anio">Este año</button>
+        <button type="button" data-periodo="todo">Todo</button>
+      </p>
+    </form>
+
+    <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
+
+    <!-- Indicadores principales -->
+    <ul class="kpis" aria-label="Indicadores">
+      <li><span>Cambios registrados</span><strong id="kpi-total">0</strong></li>
+      <li><span>Total ejecutado</span><strong id="kpi-ejecutado">0</strong><small>Exitosos, fallidos y revertidos</small></li>
+      <li class="kpi-exito"><span>Tasa de éxito</span><strong id="kpi-exito">–</strong><small id="kpi-exito-det"></small></li>
+      <li class="kpi-fallo"><span>% fallido</span><strong id="kpi-fallo">–</strong><small id="kpi-fallo-det"></small></li>
+      <li><span>Pendientes</span><strong id="kpi-pendiente">0</strong><small>Sin resultado final</small></li>
+    </ul>
+
+    <h3>Cambios por área y resultado</h3>
+    <div id="leyenda" class="leyenda" aria-hidden="true"></div>
+    <div id="grafico" class="grafico" role="img" aria-label="Gráfico de barras: cambios por área según su resultado. Los mismos datos están en la tabla dinámica."></div>
+    <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+
+    <h3>Tabla dinámica</h3>
+    <p>
+      <label for="pivote-columnas">Columnas</label>
+      <select id="pivote-columnas">
+        <option value="resultado">Resultado</option>
+        <option value="clasificacion">Clasificación</option>
+        <option value="estado">Estado de aprobación</option>
+      </select>
+    </p>
+    <div class="tabla-desplazable">
+      <table id="pivote">
+        <thead><tr><th scope="col">Área</th></tr></thead>
+        <tbody><tr><td colspan="1">Cargando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/tablero.js"></script>
+</body>
+</html>
