@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usuarios · ChangePlanner TI</title>
+  <link rel="stylesheet" href="Estilos.css">
+</head>
+<body>
+
+<header>
+  <h1>ChangePlanner TI</h1>
+  <p>Control de cambios en la infraestructura de TI</p>
+  <nav aria-label="Menú principal"></nav>
+</header>
+
+<main hidden>
+  <section id="usuarios">
+    <h2>Usuarios y roles</h2>
+    <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
+
+    <h3>Crear usuario</h3>
+    <form id="form-nuevo">
+      <fieldset>
+        <legend>Cuenta nueva</legend>
+        <p><label for="nuevo-nombre">Nombre completo</label><br>
+          <input type="text" id="nuevo-nombre" name="nombre" required minlength="3" maxlength="80"></p>
+        <p><label for="nuevo-correo">Correo</label><br>
+          <input type="email" id="nuevo-correo" name="correo" required></p>
+        <p><label for="nuevo-contrasena">Contraseña temporal</label><br>
+          <input type="password" id="nuevo-contrasena" name="contrasena" required minlength="8" autocomplete="new-password"><br>
+          <span class="ayuda">Mínimo 8 caracteres, con letras y números. La persona puede cambiarla con «¿Olvidaste tu contraseña?».</span></p>
+        <p><label for="nuevo-rol">Rol</label><br>
+          <select id="nuevo-rol" name="rol">
+            <option>Visualizador</option>
+            <option>Aprobador</option>
+            <option>Administrador</option>
+          </select></p>
+      </fieldset>
+      <button type="submit">Crear usuario</button>
+    </form>
+
+    <h3>Usuarios registrados</h3>
+    <div class="tabla-desplazable">
+      <table id="tabla-usuarios">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Correo</th>
+            <th scope="col">Rol</th>
+            <th scope="col">Activo</th>
+            <th scope="col">Registrado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody><tr><td colspan="6">Cargando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script src="js/usuarios.js"></script>
+</body>
+</html>
