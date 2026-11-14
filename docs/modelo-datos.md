@@ -2,7 +2,7 @@
 
 Base de datos: **PostgreSQL en Supabase**. Las migraciones versionadas están en [`supabase/migrations/`](../supabase/migrations) y los datos de ejemplo en [`supabase/seed.sql`](../supabase/seed.sql).
 
-El diagrama muestra el **producto completo (24 tablas)**. En la semana 3 se implementan las **12 tablas del núcleo** (con atributos); las otras 12 son el camino de las próximas semanas (solo identificador).
+El diagrama muestra el **producto completo (26 tablas)**. Están implementadas **14**: las 12 del núcleo (semana 3) y `perfiles` y `cambios_eliminados` (semana 4, autenticación y roles). Las otras 12 son el camino de las próximas semanas (solo identificador).
 
 ## Diagrama (producto completo)
 
@@ -95,6 +95,27 @@ erDiagram
     timestamptz fecha
   }
 
+  %% ---------- Implementadas en la semana 4 ----------
+  AUTH_USERS {
+    uuid id PK "Supabase Auth"
+    text email
+  }
+  PERFILES {
+    uuid id PK "= auth.users.id"
+    text correo UK
+    text nombre_completo
+    text rol "Visualizador, Aprobador, Administrador"
+    boolean activo
+  }
+  CAMBIOS_ELIMINADOS {
+    bigint id PK
+    bigint cambio_id
+    jsonb datos
+    text motivo
+    text eliminado_por
+    uuid eliminado_por_id FK
+  }
+
   %% ---------- Próximas semanas ----------
   TIPOS_ACTIVO { bigint id PK }
   SITIOS { bigint id PK }
@@ -122,6 +143,9 @@ erDiagram
   SEMANAS ||--o{ CAMBIOS : "agrupa"
   SEMANAS ||--o{ APROBACIONES_SEMANALES : "se decide en"
   CAMBIOS ||--o{ HISTORIAL_CAMBIOS : "audita"
+  AUTH_USERS ||--|| PERFILES : "tiene"
+  PERFILES |o--o{ APROBACIONES_SEMANALES : "decide"
+  PERFILES |o--o{ CAMBIOS_ELIMINADOS : "elimina"
 
   %% ---------- Relaciones futuras ----------
   TIPOS_ACTIVO ||--o{ ACTIVOS : "tipifica"
@@ -262,6 +286,7 @@ Se crea sola la primera vez que se registra un cambio de esa semana (`obtener_o_
 | aprobado_por | text | | NN; mínimo 3 caracteres |
 | fecha_aprobacion | date | | NN; no puede ser futura (la valida la función) |
 | comentarios | text | | Obligatorio (mínimo 5 caracteres) si la decisión es `Rechazada` (`aprobaciones_rechazo_con_comentario`) |
+| aprobado_por_id | uuid | FK → perfiles.id | Semana 4: usuario que decidió. `SET NULL` si se elimina la cuenta |
 | created_at | timestamptz | | NN |
 
 Una semana rechazada puede decidirse otra vez, por eso una semana puede tener varias filas; la vigente es la más reciente.
@@ -277,7 +302,30 @@ Una semana rechazada puede decidirse otra vez, por eso una semana puede tener va
 | ejecutado_por | text | | NN, por defecto el rol de base de datos que ejecutó el cambio |
 | fecha | timestamptz | | NN |
 
-Lo llena un trigger; la aplicación nunca escribe aquí.
+Lo llena un trigger; la aplicación nunca escribe aquí. Desde la semana 4 `ejecutado_por` guarda el correo del usuario que inició sesión.
+
+### perfiles (semana 4)
+| Columna | Tipo | Llave | Restricciones |
+|---|---|---|---|
+| id | uuid | PK, FK → auth.users.id | `CASCADE`: al borrar la cuenta se borra el perfil |
+| correo | text | UK | NN; único sin distinguir mayúsculas; se sincroniza con Auth |
+| nombre_completo | text | | NN, mínimo 3 caracteres |
+| rol | text | | NN, por defecto `Visualizador`; solo `Visualizador`, `Aprobador` o `Administrador` |
+| activo | boolean | | NN, por defecto `true`. Una cuenta inactiva no puede leer ni escribir |
+| created_at, updated_at | timestamptz | | NN |
+
+Lo crea el trigger `al_crear_usuario` cuando alguien se registra, siempre como Visualizador.
+
+### cambios_eliminados (semana 4)
+| Columna | Tipo | Llave | Restricciones |
+|---|---|---|---|
+| id | bigint | PK | |
+| cambio_id | bigint | | NN (sin FK: el cambio ya no existe) |
+| datos | jsonb | | NN; copia completa de la fila eliminada |
+| motivo | text | | NN, mínimo 5 caracteres |
+| eliminado_por | text | | NN; correo de quien eliminó |
+| eliminado_por_id | uuid | FK → perfiles.id | `SET NULL` |
+| fecha | timestamptz | | NN |
 
 ## Qué pasa al borrar
 
@@ -291,7 +339,9 @@ Lo llena un trigger; la aplicación nunca escribe aquí.
 | un RFC | cambios | **SET NULL** | Igual que la solicitud |
 | una semana | cambios | **RESTRICT** | Una semana con cambios no se puede borrar |
 | una semana (sin cambios) | aprobaciones | **CASCADE** | Las decisiones no tienen sentido sin su semana |
-| un cambio | historial | **CASCADE** | El borrado físico de un cambio es excepcional (solo administrador por SQL); la app nunca borra |
+| un cambio | historial | **CASCADE** | Solo el Administrador elimina, con motivo; antes se copia la fila en `cambios_eliminados`. Un cambio aprobado no se puede eliminar |
+| una cuenta de Auth | perfil | **CASCADE** | El perfil no tiene sentido sin la cuenta |
+| un perfil | aprobaciones, cambios eliminados | **SET NULL** | Se conserva el nombre en texto (`aprobado_por`, `eliminado_por`) |
 
 ## Reglas de negocio que impone la base de datos
 
@@ -309,9 +359,10 @@ La aplicación muestra estos mensajes tal cual los devuelve la base (ver `js/api
 
 ## Acceso y seguridad
 
-Todas las tablas tienen **RLS activado**. La web usa la clave pública (rol `anon`) y solo puede:
+Todas las tablas tienen **RLS activado**. Desde la semana 4 la web exige iniciar sesión (Supabase Auth):
 
-- **Leer** los catálogos y las vistas `v_cambios_detalle`, `v_resumen_semana` y `v_cambios_por_usuario` (no exponen el correo de los empleados).
-- **Escribir** únicamente llamando a las funciones `registrar_cambio` y `aprobar_semana`. No hay `INSERT`, `UPDATE` ni `DELETE` directos.
+- **Sin sesión** (rol `anon`) no se puede leer ni escribir nada.
+- **Con sesión** (rol `authenticated`) se leen los catálogos y las vistas, que filtran por el rol del usuario (`mi_rol()`); el detalle de cambios solo lo ven Aprobador y Administrador.
+- **Escritura** solo por funciones que llaman a `exigir_rol()`: `registrar_cambio`, `actualizar_cambio`, `eliminar_cambio` (Administrador), `aprobar_semana` (Aprobador), `admin_guardar_usuario` y `admin_eliminar_usuario` (Administrador). Además, el trigger `cambios_permisos` protege la tabla `cambios` por cualquier camino.
 
-**Limitación conocida:** todavía no hay inicio de sesión, así que cualquiera que conozca la URL puede ejecutar esas dos funciones. Se corregirá con Supabase Auth; mientras tanto no se deben cargar datos reales sensibles.
+La matriz completa de permisos está en [permisos.md](permisos.md).
