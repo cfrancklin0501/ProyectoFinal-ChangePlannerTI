@@ -3,24 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ChangePlanner TI</title>
+  <title>Cambios registrados · ChangePlanner TI</title>
   <link rel="stylesheet" href="Estilos.css">
 </head>
+<body>
 
 <header>
-    <h1>ChangePlanner TI</h1>
-    <p>Control de cambios en la infraestructura de TI</p>
-<nav>
-  <a href="index.html">Registrar cambio</a>
-  <a href="CambiosSemanal.html">Resumen semanal</a>
-</nav>
+  <h1>ChangePlanner TI</h1>
+  <p>Control de cambios en la infraestructura de TI</p>
+  <nav>
+    <a href="index.html">Registrar cambio</a>
+    <a href="CambiosRegistrados.html" aria-current="page">Cambios registrados</a>
+    <a href="CambiosSemanal.html">Resumen semanal</a>
+  </nav>
 </header>
 
-<section id="cambios">
-      <h2>Cambios registrados</h2>
-      <table border="1">
-        <thead>
-          <tr>
+<main>
+  <section id="cambios">
+    <h2>Cambios registrados</h2>
+    <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
+    <table>
+      <thead>
+        <tr>
           <th scope="col">Fecha de ingreso</th>
           <th scope="col">Código Empleado</th>
           <th scope="col">Usuario</th>
@@ -39,12 +43,19 @@
           <th scope="col">Firmadas</th>
           <th scope="col">Observaciones</th>
           <th scope="col">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="18">Aún no hay cambios registrados.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="18">Cargando…</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/registrados.js"></script>
+</body>
+</html>
