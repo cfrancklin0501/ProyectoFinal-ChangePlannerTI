@@ -3,84 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ChangePlanner TI</title>
+  <title>Registrar cambio · ChangePlanner TI</title>
   <link rel="stylesheet" href="Estilos.css">
 </head>
+<body>
 
 <header>
-    <h1>ChangePlanner TI</h1>
-    <p>Control de cambios en la infraestructura de TI</p>
-<nav>
-  <a href="CambiosRegistrados.html">Cambios registrados</a>
-  <a href="CambiosSemanal.html">Resumen semanal</a>
-</nav>
+  <h1>ChangePlanner TI</h1>
+  <p>Control de cambios en la infraestructura de TI</p>
+  <nav>
+    <a href="index.html" aria-current="page">Registrar cambio</a>
+    <a href="CambiosRegistrados.html">Cambios registrados</a>
+    <a href="CambiosSemanal.html">Resumen semanal</a>
+  </nav>
 </header>
 
 <main>
-  <!-- Datos de quien realiza el cambio y qué área -->
-    <section id="registro">
-      <h2>Registrar cambio</h2>
-      <form id="form-cambio">
-        <fieldset>
-          <legend>Datos del solicitante</legend>
-          <p><label for="fechaIngreso">Fecha de ingreso</label><br>
-            <input type="date" id="fechaIngreso" name="fechaIngreso" required></p>
-          <p><label for="codigoEmpleado">Código empleado</label><br>
-            <input type="text" id="codigoEmpleado" name="codigoEmpleado"></p>
-          <p><label for="usuario">Usuario</label><br>
-            <input type="text" id="usuario" name="usuario" required></p>
-          <p><label for="area">Área</label><br>
-            <input type="text" id="area" name="area" required></p>
-          <p><label for="idArea">ID área</label><br>
-            <input type="text" id="idArea" name="idArea"></p>
-        </fieldset>
-      
-        <!-- Datos de la actividad a realizar en la infraestructura -->
-         <fieldset>
-          <legend>Datos del cambio</legend>
-          <p><label for="idSolicitud">ID solicitud</label><br>
-            <input type="text" id="idSolicitud" name="idSolicitud"></p>
-          <p><label for="rfc">RFC</label><br>
-            <input type="text" id="rfc" name="rfc"></p>
-          <p><label for="rfcTipo">RFC local o regional</label><br>
-            <select id="rfcTipo" name="rfcTipo">
-              <option>Local</option>
-              <option>Regional</option>
-            </select></p>
-          <p><label for="idRfcBi">ID-RFC-BI</label><br>
-            <input type="text" id="idRfcBi" name="idRfcBi"></p>
-          <p><label for="actividad">Actividad</label><br>
-            <textarea id="actividad" name="actividad" rows="3" cols="50" required></textarea></p>
-          <p><label for="clasificacion">Clasificación</label><br>
-            <input type="text" id="clasificacion" name="clasificacion" list="lista-clasificacion">
-            <datalist id="lista-clasificacion">
-              <option value="Estándar">
-              <option value="Normal">
-              <option value="Emergencia">
-            </datalist></p>
-          <p><label for="resultado">Resultado</label><br>
-            <select id="resultado" name="resultado">
-              <option>Pendiente</option>
-              <option>Exitoso</option>
-              <option>Fallido</option>
-              <option>Revertido</option>
-            </select></p>
-          <p><label for="confirmacion">Confirmación</label><br>
-            <select id="confirmacion" name="confirmacion">
-              <option>No</option>
-              <option>Sí</option>
-            </select></p>
-          <p><label for="firmadas">Firmadas</label><br>
-            <select id="firmadas" name="firmadas">
-              <option>No</option>
-              <option>Sí</option>
-            </select></p>
-          <p><label for="observaciones">Observaciones</label><br>
-            <textarea id="observaciones" name="observaciones" rows="3" cols="50"></textarea></p>
-        </fieldset>
-         
-        <!-- Boton que registra el cambio -->
-        <button type="submit">Registrar cambio</button>
-      </form>
-    </section>
+  <section id="registro">
+    <h2>Registrar cambio</h2>
+    <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
+
+    <form id="form-cambio">
+      <!-- Datos de quien realiza el cambio y qué área -->
+      <fieldset>
+        <legend>Datos del solicitante</legend>
+        <p><label for="fechaIngreso">Fecha de ingreso</label><br>
+          <input type="date" id="fechaIngreso" name="fechaIngreso" required></p>
+        <p><label for="codigoEmpleado">Código empleado</label><br>
+          <input type="text" id="codigoEmpleado" name="codigoEmpleado" maxlength="30"></p>
+        <p><label for="usuario">Usuario</label><br>
+          <input type="text" id="usuario" name="usuario" required maxlength="60"></p>
+        <p><label for="area">Área</label><br>
+          <select id="area" name="area" required>
+            <option value="">Cargando…</option>
+          </select></p>
+        <p><label for="idArea">ID área</label><br>
+          <input type="text" id="idArea" name="idArea" readonly tabindex="-1"></p>
+      </fieldset>
+
+      <!-- Datos de la actividad a realizar en la infraestructura -->
+      <fieldset>
+        <legend>Datos del cambio</legend>
+        <p><label for="idSolicitud">ID solicitud</label><br>
+          <input type="text" id="idSolicitud" name="idSolicitud" maxlength="40"></p>
+        <p><label for="rfc">RFC</label><br>
+          <input type="text" id="rfc" name="rfc" maxlength="40"></p>
+        <p><label for="rfcTipo">RFC local o regional</label><br>
+          <select id="rfcTipo" name="rfcTipo"></select></p>
+        <p><label for="idRfcBi">ID-RFC-BI</label><br>
+          <input type="text" id="idRfcBi" name="idRfcBi" maxlength="40"></p>
+        <p><label for="actividad">Actividad</label><br>
+          <textarea id="actividad" name="actividad" rows="3" cols="50" required minlength="10" maxlength="1000"></textarea></p>
+        <p><label for="clasificacion">Clasificación</label><br>
+          <select id="clasificacion" name="clasificacion" required>
+            <option value="">Cargando…</option>
+          </select></p>
+        <p><label for="resultado">Resultado</label><br>
+          <select id="resultado" name="resultado"></select></p>
+        <p><label for="confirmacion">Confirmación</label><br>
+          <select id="confirmacion" name="confirmacion">
+            <option>No</option>
+            <option>Sí</option>
+          </select></p>
+        <p><label for="firmadas">Firmadas</label><br>
+          <select id="firmadas" name="firmadas">
+            <option>No</option>
+            <option>Sí</option>
+          </select></p>
+        <p><label for="observaciones">Observaciones</label><br>
+          <textarea id="observaciones" name="observaciones" rows="3" cols="50" maxlength="1000"></textarea><br>
+          <span id="ayuda-observaciones" class="ayuda" hidden>Los cambios de emergencia requieren una justificación (mínimo 10 caracteres).</span></p>
+      </fieldset>
+
+      <!-- Botón que registra el cambio -->
+      <button type="submit" disabled>Registrar cambio</button>
+    </form>
+  </section>
 </main>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/registro.js"></script>
+</body>
+</html>
