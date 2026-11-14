@@ -1,4 +1,5 @@
-// Index.html · Registrar cambio (flujo central 1: llama a registrar_cambio en la base real)
+// RegistrarCambio.html · Registrar cambio (flujo central 1: llama a registrar_cambio en la base real)
+// Solo Administrador. La base lo vuelve a comprobar (trigger cambios_permisos).
 (function () {
   "use strict";
   const { listar, rpc, hoy, mostrarMensaje } = window.CP;
@@ -109,5 +110,5 @@
   el.clasificacion.addEventListener("change", actualizarRequisitoObservaciones);
 
   boton.disabled = true;
-  cargarCatalogos();
+  window.AUTH.proteger(["Administrador"]).then((perfil) => { if (perfil) cargarCatalogos(); });
 })();
