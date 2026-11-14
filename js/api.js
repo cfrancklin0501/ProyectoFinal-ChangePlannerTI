@@ -1,5 +1,6 @@
 // Cliente mínimo para la API REST de Supabase (PostgREST), sin librerías externas.
-// Expone window.CP con utilidades compartidas por las tres páginas.
+// Expone window.CP con utilidades compartidas por todas las páginas.
+// Desde la semana 4 cada petición va con el token del usuario que inició sesión (js/auth.js).
 (function () {
   "use strict";
 
@@ -42,10 +43,9 @@
     return c;
   }
 
-  function cabeceras(clave) {
+  function cabeceras(clave, token) {
     const h = { apikey: clave, "Content-Type": "application/json" };
-    // Las claves antiguas (anon) son JWT y también van en Authorization; las nuevas (publishable) no.
-    if (clave.startsWith("eyJ")) h.Authorization = "Bearer " + clave;
+    if (token) h.Authorization = "Bearer " + token;
     return h;
   }
 
@@ -60,7 +60,11 @@
       if (texto.includes(nombre)) return mensaje;
     }
     if (datos.code === "23503") return "No se puede completar: el registro está relacionado con otros datos.";
-    if (datos.code === "42501") return "No tienes permiso para realizar esta acción.";
+    if (datos.code === "42501") {
+      // Mensajes de exigir_rol() en la base ("Tu rol (...) no tiene permiso...") se muestran tal cual
+      if (/^(Tu rol|Tu cuenta|Debes iniciar)/.test(texto)) return texto;
+      return "No tienes permiso para realizar esta acción.";
+    }
     if (datos.code === "PGRST202" || datos.code === "PGRST205" || datos.code === "42P01") {
       return "La base de datos no tiene el esquema esperado. ¿Ya se ejecutaron las migraciones?";
     }
@@ -69,13 +73,22 @@
 
   async function pedir(ruta, opciones) {
     const c = configuracion();
+    const token = window.AUTH ? await window.AUTH.obtenerToken() : null;
+    if (!token) {
+      if (window.AUTH) window.AUTH.irAlLogin();
+      throw new Error("Tu sesión terminó. Inicia sesión de nuevo.");
+    }
     let resp;
     try {
       resp = await fetch(c.SUPABASE_URL + "/rest/v1/" + ruta, Object.assign({}, opciones, {
-        headers: cabeceras(c.SUPABASE_ANON_KEY)
+        headers: cabeceras(c.SUPABASE_ANON_KEY, token)
       }));
     } catch (e) {
       throw new Error("No hay conexión con el servidor. Revisa tu internet e intenta de nuevo.");
+    }
+    if (resp.status === 401) {
+      if (window.AUTH) window.AUTH.irAlLogin();
+      throw new Error("Tu sesión expiró. Inicia sesión de nuevo.");
     }
     const texto = await resp.text();
     let datos = null;
