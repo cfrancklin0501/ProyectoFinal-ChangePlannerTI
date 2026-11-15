@@ -95,6 +95,8 @@ erDiagram
     timestamptz fecha
   }
 
+  %% Semana 5: CAMBIOS suma etapa (Registrado, Aprobado en sesión, Ejecutado), fecha_sesion y fecha_ejecucion
+
   %% ---------- Implementadas en la semana 4 ----------
   AUTH_USERS {
     uuid id PK "Supabase Auth"
@@ -303,6 +305,15 @@ Una semana rechazada puede decidirse otra vez, por eso una semana puede tener va
 | fecha | timestamptz | | NN |
 
 Lo llena un trigger; la aplicación nunca escribe aquí. Desde la semana 4 `ejecutado_por` guarda el correo del usuario que inició sesión.
+
+### cambios · columnas de la semana 5 (registro por etapas)
+| Columna | Tipo | Llave | Restricciones |
+|---|---|---|---|
+| etapa | text | | NN, por defecto `Registrado`; solo `Registrado`, `Aprobado en sesión` o `Ejecutado`. Avanza solo con `avanzar_etapa`, un paso a la vez |
+| fecha_sesion | date | | Obligatoria desde la etapa 2; no anterior a `fecha_ingreso` |
+| fecha_ejecucion | date | | Obligatoria en la etapa 3; no anterior a `fecha_sesion` |
+
+Reglas (trigger `cambios_etapa`): por la API todo cambio nuevo empieza en `Registrado` con resultado `Pendiente`, sin confirmación ni firmas; el resultado final (Exitoso, Fallido, Revertido) solo existe en la etapa `Ejecutado`; una semana solo se aprueba cuando todos sus cambios están ejecutados.
 
 ### perfiles (semana 4)
 | Columna | Tipo | Llave | Restricciones |

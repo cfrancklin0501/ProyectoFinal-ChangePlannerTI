@@ -2,6 +2,10 @@
 
 Aplicación web para registrar qué persona realiza cambios en la infraestructura de TI de la empresa, con un resumen semanal para gerencia y aprobación posterior.
 
+**App en producción:** https://cfrancklin0501.github.io/ProyectoFinal-ChangePlannerTI/
+
+Cada cambio pasa por tres etapas: **Registrado → Aprobado en sesión → Ejecutado**.
+
 **Token de propiedad:** LEARN-CAP-9CCE709E
 
 ## Tecnologías
@@ -13,7 +17,7 @@ Aplicación web para registrar qué persona realiza cambios en la infraestructur
 |---|---|
 | Visualizador (por defecto al registrarse) | Ver el tablero de bienvenida y el resumen semanal |
 | Aprobador | Además, ver el detalle de los cambios y aprobar o rechazar la semana |
-| Administrador | Registrar, editar y eliminar cambios; gestionar usuarios y roles |
+| Administrador | Registrar cambios, actualizar su etapa, editarlos y eliminarlos; gestionar usuarios y roles |
 
 Los permisos se verifican en el servidor. Detalle y cuentas de demostración en [docs/permisos.md](docs/permisos.md).
 
@@ -35,7 +39,7 @@ docs/                      Documentación
 ```
 
 ## Puesta en marcha
-1. En Supabase, abre **SQL Editor** y ejecuta en orden los archivos de `supabase/migrations/` (si ya ejecutaste del 1 al 5, solo falta el 6).
+1. En Supabase, abre **SQL Editor** y ejecuta en orden los archivos de `supabase/migrations/` (1 a 7).
 2. (Solo desarrollo) Ejecuta `supabase/seed.sql` para cargar datos de ejemplo.
 3. En **Authentication → URL Configuration** pon la URL pública del sitio en *Site URL* y agrega `https://TU-SITIO/login.html` y `https://TU-SITIO/restablecer.html` en *Redirect URLs*.
 4. Crea las cuentas de demostración y ejecuta `supabase/cuentas-demo.sql`. Para tu propia cuenta, regístrate en la app y dale el rol Administrador desde el SQL Editor (está el ejemplo al final de ese archivo).
@@ -47,4 +51,5 @@ docs/                      Documentación
 - [Mapa de historias](docs/mapa-historias.md) · [Backlog](docs/backlog-historias.md) · [Plan](docs/plan.md)
 - [Modelo de datos](docs/modelo-datos.md)
 - [Permisos](docs/permisos.md)
-- Bitácoras: [semana 1](docs/bitacora/semana-1.md) · [semana 2](docs/bitacora/semana-2.md) · [semana 3](docs/bitacora/semana-3.md) · [semana 4](docs/bitacora/semana-4.md)
+- [Pruebas con usuarios](docs/pruebas-usuarios.md) · [Issues de la prueba](docs/issues-semana-5.md)
+- Bitácoras: [semana 1](docs/bitacora/semana-1.md) · [semana 2](docs/bitacora/semana-2.md) · [semana 3](docs/bitacora/semana-3.md) · [semana 4](docs/bitacora/semana-4.md) · [semana 5](docs/bitacora/semana-5.md)

@@ -23,8 +23,9 @@ Separación de funciones: el Administrador registra los cambios y el Aprobador l
 | Ver resumen semanal (totales y cambios por usuario) | ❌ | ✅ | ✅ | ✅ | vistas `v_resumen_semana`, `v_cambios_por_usuario` |
 | Ver catálogos (áreas, clasificaciones…) | ❌ | ✅ | ✅ | ✅ | `grant select … to authenticated` + políticas RLS |
 | Ver el detalle de los cambios y exportar CSV | ❌ | ❌ | ✅ | ✅ | vista `v_cambios_detalle` (filtro `mi_rol() in ('Aprobador','Administrador')`) |
-| Aprobar o rechazar una semana | ❌ | ❌ | ✅ (solo con su propio usuario) | ❌ | función `aprobar_semana` → `exigir_rol('Aprobador')` |
-| Registrar un cambio | ❌ | ❌ | ❌ | ✅ | trigger `cambios_permisos` en la tabla `cambios` |
+| Aprobar o rechazar una semana | ❌ | ❌ | ✅ (solo con su propio usuario; aprobar exige todos los cambios en etapa Ejecutado) | ❌ | función `aprobar_semana` → `exigir_rol('Aprobador')` |
+| Registrar un cambio (etapa 1, resultado Pendiente) | ❌ | ❌ | ❌ | ✅ | trigger `cambios_permisos` + trigger `cambios_etapa` |
+| Actualizar etapa: 2 Aprobado en sesión / 3 Ejecutado (semana 5) | ❌ | ❌ | ❌ | ✅ | función `avanzar_etapa` → `exigir_rol('Administrador')` |
 | Editar un cambio (no aprobado) | ❌ | ❌ | ❌ | ✅ | `actualizar_cambio` + trigger `cambios_permisos` |
 | Eliminar un cambio (no aprobado, con motivo) | ❌ | ❌ | ❌ | ✅ | `eliminar_cambio` + trigger `cambios_permisos` |
 | Ver su propio perfil | ❌ | ✅ | ✅ | ✅ | política RLS `perfiles_lectura` |
