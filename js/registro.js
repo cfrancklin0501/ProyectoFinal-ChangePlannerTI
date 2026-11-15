@@ -1,5 +1,6 @@
 // RegistrarCambio.html · Registrar cambio (flujo central 1: llama a registrar_cambio en la base real)
 // Solo Administrador. La base lo vuelve a comprobar (trigger cambios_permisos).
+// Semana 5: el registro es la etapa 1; el resultado queda Pendiente y se documenta después (avanzar_etapa).
 (function () {
   "use strict";
   const { listar, rpc, hoy, mostrarMensaje } = window.CP;
@@ -11,6 +12,7 @@
 
   let areas = [];
   let clasificaciones = [];
+  let idPendiente = null;
 
   function llenar(select, filas, placeholder, nombreDefecto) {
     select.replaceChildren();
@@ -62,7 +64,9 @@
       clasificaciones = c;
       llenar(el.area, a, "Selecciona un área…");
       llenar(el.clasificacion, c, "Selecciona una clasificación…");
-      llenar(el.resultado, r, null, "Pendiente");
+      const pendiente = r.find((x) => x.nombre === "Pendiente");
+      if (!pendiente) throw new Error("Falta el resultado «Pendiente» en el catálogo de resultados.");
+      idPendiente = pendiente.id;
       llenar(el.rfcTipo, am);
       aplicarPorDefecto();
       msg.hidden = true;
@@ -91,14 +95,14 @@
         p_id_rfc_bi: el.idRfcBi.value,
         p_actividad: el.actividad.value,
         p_clasificacion_id: numeroOnulo(el.clasificacion.value),
-        p_resultado_id: numeroOnulo(el.resultado.value),
-        p_confirmacion: el.confirmacion.value === "Sí",
-        p_firmadas: el.firmadas.value === "Sí",
+        p_resultado_id: idPendiente,
+        p_confirmacion: false,
+        p_firmadas: false,
         p_observaciones: el.observaciones.value
       });
       form.reset();
       aplicarPorDefecto();
-      mostrarMensaje(msg, "Cambio #" + id + " registrado correctamente.", "ok");
+      mostrarMensaje(msg, "Cambio #" + id + " registrado en la etapa 1. Cuando se apruebe en sesión, actualiza su etapa en Cambios registrados.", "ok");
     } catch (e) {
       mostrarMensaje(msg, e.message, "error");
     } finally {

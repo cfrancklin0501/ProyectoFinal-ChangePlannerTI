@@ -39,13 +39,16 @@
           <th scope="col">ID-RFC-BI</th>
           <th scope="col">Actividad</th>
           <th scope="col">Clasificación</th>
+          <th scope="col">Etapa</th>
+          <th scope="col">Fecha de sesión</th>
+          <th scope="col">Fecha de ejecución</th>
           <th scope="col">Resultado</th>
           <th scope="col">Confirmación</th>
           <th scope="col">Aprobado por</th>
           <th scope="col">Fecha de Aprobación</th>
           <th scope="col">Firmadas</th>
           <th scope="col">Observaciones</th>
-          <th scope="col">Estado</th>
+          <th scope="col">Aprobación semanal</th>
           <th scope="col" class="solo-admin" hidden>Acciones</th>
         </tr>
       </thead>
@@ -66,16 +69,37 @@
         <textarea id="ed-actividad" name="actividad" rows="3" required minlength="10" maxlength="1000"></textarea></p>
       <p><label for="ed-clasificacion">Clasificación</label><br>
         <select id="ed-clasificacion" name="clasificacion" required></select></p>
-      <p><label for="ed-resultado">Resultado</label><br>
-        <select id="ed-resultado" name="resultado" required></select></p>
-      <p><label for="ed-confirmacion">Confirmación</label><br>
-        <select id="ed-confirmacion" name="confirmacion"><option>No</option><option>Sí</option></select></p>
-      <p><label for="ed-firmadas">Firmadas</label><br>
-        <select id="ed-firmadas" name="firmadas"><option>No</option><option>Sí</option></select></p>
       <p><label for="ed-observaciones">Observaciones</label><br>
         <textarea id="ed-observaciones" name="observaciones" rows="3" maxlength="1000"></textarea></p>
       <p id="editar-mensaje" class="mensaje error" role="alert" hidden></p>
       <button type="submit" value="guardar">Guardar cambios</button>
+      <button type="button" class="btn-cerrar">Cancelar</button>
+    </form>
+  </dialog>
+
+  <!-- Actualizar etapa (solo Administrador): 1 Registrado → 2 Aprobado en sesión → 3 Ejecutado -->
+  <dialog id="dlg-etapa" aria-labelledby="dlg-etapa-titulo">
+    <form id="form-etapa" method="dialog">
+      <h3 id="dlg-etapa-titulo">Actualizar etapa</h3>
+      <p class="ayuda" id="etapa-resumen"></p>
+      <ol class="etapas" aria-label="Etapas del cambio">
+        <li data-etapa="Registrado">Registrado</li>
+        <li data-etapa="Aprobado en sesión">Aprobado en sesión</li>
+        <li data-etapa="Ejecutado">Ejecutado</li>
+      </ol>
+      <p><label for="et-fecha" id="et-fecha-etiqueta">Fecha</label><br>
+        <input type="date" id="et-fecha" name="fecha" required></p>
+      <div id="et-campos-ejecucion">
+        <p><label for="et-resultado">Resultado de la ejecución</label><br>
+          <select id="et-resultado" name="resultado"></select></p>
+        <p><label><input type="checkbox" id="et-confirmacion" name="confirmacion"> Confirmación del solicitante</label></p>
+      </div>
+      <p><label><input type="checkbox" id="et-firmadas" name="firmadas"> Firmadas</label></p>
+      <p><label for="et-observaciones">Observaciones</label><br>
+        <textarea id="et-observaciones" name="observaciones" rows="3" maxlength="1000"></textarea><br>
+        <span class="ayuda" id="et-ayuda-obs" hidden>Si el cambio fue fallido o revertido, explica qué pasó (mínimo 10 caracteres).</span></p>
+      <p id="etapa-mensaje" class="mensaje error" role="alert" hidden></p>
+      <button type="submit" id="et-guardar">Guardar etapa</button>
       <button type="button" class="btn-cerrar">Cancelar</button>
     </form>
   </dialog>

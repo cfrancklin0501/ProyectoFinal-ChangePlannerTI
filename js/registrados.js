@@ -1,5 +1,6 @@
 // CambiosRegistrados.html · lista de cambios leída desde la vista v_cambios_detalle
-// Aprobador: solo lectura (por defecto ve la semana actual). Administrador: además edita y elimina.
+// Aprobador: solo lectura (por defecto ve la semana actual). Administrador: además actualiza la etapa, edita y elimina.
+// Etapas (semana 5): 1 Registrado → 2 Aprobado en sesión → 3 Ejecutado (función avanzar_etapa).
 // La base vuelve a comprobar el rol en v_cambios_detalle, actualizar_cambio y eliminar_cambio.
 (function () {
   "use strict";
@@ -57,6 +58,9 @@
           if (fila.estado === "Aprobado") {
             td.textContent = "Aprobado: no editable";
           } else {
+            if (fila.etapa !== "Ejecutado") {
+              td.append(botonAccion("Actualizar etapa", "btn-etapa", () => abrirEtapa(fila)));
+            }
             td.append(
               botonAccion("Editar", "", () => abrirEditar(fila)),
               botonAccion("Eliminar", "btn-peligro", () => abrirEliminar(fila))
@@ -93,7 +97,7 @@
     catalogos = { clasificaciones: c, resultados: r };
     const llenar = (select, filas) => select.replaceChildren(...filas.map((x) => new Option(x.nombre, x.id)));
     llenar(fEditar.elements.clasificacion, c);
-    llenar(fEditar.elements.resultado, r);
+    llenar(document.getElementById("et-resultado"), r.filter((x) => x.nombre !== "Pendiente"));
     return catalogos;
   }
 
@@ -110,9 +114,6 @@
       "Cambio #" + fila.id + " · " + fila.fecha_ingreso + " · " + fila.usuario + " · " + fila.area;
     e.actividad.value = fila.actividad || "";
     e.clasificacion.value = String(fila.clasificacion_id);
-    e.resultado.value = String(fila.resultado_id);
-    e.confirmacion.value = fila.confirmacion ? "Sí" : "No";
-    e.firmadas.value = fila.firmadas ? "Sí" : "No";
     e.observaciones.value = fila.observaciones || "";
     msgEditar.hidden = true;
     dlgEditar.showModal();
@@ -129,9 +130,10 @@
         p_id: cambioEnEdicion.id,
         p_actividad: e.actividad.value,
         p_clasificacion_id: Number(e.clasificacion.value),
-        p_resultado_id: Number(e.resultado.value),
-        p_confirmacion: e.confirmacion.value === "Sí",
-        p_firmadas: e.firmadas.value === "Sí",
+        // El resultado, la confirmación y las firmas se cambian con "Actualizar etapa"
+        p_resultado_id: cambioEnEdicion.resultado_id,
+        p_confirmacion: cambioEnEdicion.confirmacion,
+        p_firmadas: cambioEnEdicion.firmadas,
         p_observaciones: e.observaciones.value
       });
       dlgEditar.close();
@@ -140,6 +142,82 @@
     } catch (err) {
       msgEditar.textContent = err.message;
       msgEditar.hidden = false;
+    } finally {
+      boton.disabled = false;
+    }
+  });
+
+  // ---- Actualizar etapa (Administrador) ----
+  const dlgEtapa = document.getElementById("dlg-etapa");
+  const fEtapa = document.getElementById("form-etapa");
+  const msgEtapa = document.getElementById("etapa-mensaje");
+  const SIGUIENTE = { "Registrado": "Aprobado en sesión", "Aprobado en sesión": "Ejecutado" };
+  let cambioEtapa = null;
+
+  function ayudaObservaciones() {
+    const sel = fEtapa.elements.resultado;
+    const texto = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : "";
+    const pide = SIGUIENTE[cambioEtapa.etapa] === "Ejecutado" && (texto === "Fallido" || texto === "Revertido");
+    document.getElementById("et-ayuda-obs").hidden = !pide;
+  }
+
+  async function abrirEtapa(fila) {
+    try {
+      await cargarCatalogos();
+    } catch (e) {
+      mostrarMensaje(msg, e.message, "error");
+      return;
+    }
+    cambioEtapa = fila;
+    const siguiente = SIGUIENTE[fila.etapa];
+    const ejecucion = siguiente === "Ejecutado";
+    const e = fEtapa.elements;
+    fEtapa.reset();
+    document.getElementById("dlg-etapa-titulo").textContent =
+      "Pasar a la etapa " + (ejecucion ? "3 · Ejecutado" : "2 · Aprobado en sesión");
+    document.getElementById("etapa-resumen").textContent =
+      "Cambio #" + fila.id + " · " + (fila.rfc || fila.id_solicitud || "sin código") + " · " + fila.usuario + " · " + fila.area;
+    for (const li of fEtapa.querySelectorAll(".etapas li")) {
+      li.classList.toggle("hecha", li.dataset.etapa === fila.etapa || (ejecucion && li.dataset.etapa === "Registrado"));
+      li.classList.toggle("siguiente", li.dataset.etapa === siguiente);
+    }
+    document.getElementById("et-fecha-etiqueta").textContent = ejecucion ? "Fecha de ejecución" : "Fecha de la sesión de aprobación";
+    e.fecha.value = window.CP.hoy();
+    e.fecha.max = window.CP.hoy();
+    e.fecha.min = ejecucion ? (fila.fecha_sesion || fila.fecha_ingreso) : fila.fecha_ingreso;
+    document.getElementById("et-campos-ejecucion").hidden = !ejecucion;
+    e.resultado.required = ejecucion;
+    e.firmadas.checked = !!fila.firmadas;
+    e.observaciones.value = fila.observaciones || "";
+    msgEtapa.hidden = true;
+    ayudaObservaciones();
+    dlgEtapa.showModal();
+  }
+
+  fEtapa.elements.resultado.addEventListener("change", ayudaObservaciones);
+
+  fEtapa.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    if (!fEtapa.reportValidity()) return;
+    const e = fEtapa.elements;
+    const ejecucion = SIGUIENTE[cambioEtapa.etapa] === "Ejecutado";
+    const boton = document.getElementById("et-guardar");
+    boton.disabled = true;
+    try {
+      const nueva = await rpc("avanzar_etapa", {
+        p_id: cambioEtapa.id,
+        p_fecha: e.fecha.value,
+        p_firmadas: e.firmadas.checked,
+        p_resultado_id: ejecucion ? Number(e.resultado.value) : null,
+        p_confirmacion: ejecucion ? e.confirmacion.checked : null,
+        p_observaciones: e.observaciones.value
+      });
+      dlgEtapa.close();
+      await cargar();
+      mostrarMensaje(msg, "Cambio #" + cambioEtapa.id + " actualizado a la etapa «" + nueva + "».", "ok");
+    } catch (err) {
+      msgEtapa.textContent = err.message;
+      msgEtapa.hidden = false;
     } finally {
       boton.disabled = false;
     }

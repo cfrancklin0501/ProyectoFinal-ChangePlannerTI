@@ -17,6 +17,10 @@
 <main hidden>
   <section id="registro">
     <h2>Registrar cambio</h2>
+    <p class="etapas-ayuda">
+      <strong>Etapa 1 de 3 · Registro.</strong> Ingresa la solicitud. La aprobación en sesión (etapa 2) y el resultado de la
+      ejecución (etapa 3) se documentan después en <a href="CambiosRegistrados.html">Cambios registrados</a> → <em>Actualizar etapa</em>.
+    </p>
     <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
 
     <form id="form-cambio">
@@ -53,18 +57,6 @@
         <p><label for="clasificacion">Clasificación</label><br>
           <select id="clasificacion" name="clasificacion" required>
             <option value="">Cargando…</option>
-          </select></p>
-        <p><label for="resultado">Resultado</label><br>
-          <select id="resultado" name="resultado"></select></p>
-        <p><label for="confirmacion">Confirmación</label><br>
-          <select id="confirmacion" name="confirmacion">
-            <option>No</option>
-            <option>Sí</option>
-          </select></p>
-        <p><label for="firmadas">Firmadas</label><br>
-          <select id="firmadas" name="firmadas">
-            <option>No</option>
-            <option>Sí</option>
           </select></p>
         <p><label for="observaciones">Observaciones</label><br>
           <textarea id="observaciones" name="observaciones" rows="3" cols="50" maxlength="1000"></textarea><br>

@@ -25,13 +25,16 @@
     { campo: "id_rfc_bi", titulo: "ID-RFC-BI" },
     { campo: "actividad", titulo: "Actividad" },
     { campo: "clasificacion", titulo: "Clasificación" },
+    { campo: "etapa", titulo: "Etapa" },
+    { campo: "fecha_sesion", titulo: "Fecha de sesión" },
+    { campo: "fecha_ejecucion", titulo: "Fecha de ejecución" },
     { campo: "resultado", titulo: "Resultado" },
     { campo: "confirmacion", titulo: "Confirmación" },
     { campo: "aprobado_por", titulo: "Aprobado por" },
     { campo: "fecha_aprobacion", titulo: "Fecha de Aprobación" },
     { campo: "firmadas", titulo: "Firmadas" },
     { campo: "observaciones", titulo: "Observaciones" },
-    { campo: "estado", titulo: "Estado" }
+    { campo: "estado", titulo: "Aprobación semanal" }
   ];
 
   function configuracion() {

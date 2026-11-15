@@ -747,3 +747,73 @@ dialog button {
     display: none;
   }
 }
+
+/* ==========================================================================
+   15. SEMANA 5 · etapas del cambio (Registrado → Aprobado en sesión → Ejecutado)
+   RegistrarCambio.html, CambiosRegistrados.html
+   ========================================================================== */
+.etapas-ayuda {
+  background: #E3F1F5;
+  border-left: 4px solid var(--azul-innovacion);
+  border-radius: var(--radio);
+  padding: 0.75rem 1rem;
+  color: var(--texto);
+}
+
+ol.etapas {
+  list-style: none;
+  counter-reset: etapa;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0.75rem 0 1rem;
+}
+
+ol.etapas li {
+  counter-increment: etapa;
+  flex: 1;
+  padding: 0.45rem 0.5rem;
+  border-radius: var(--radio);
+  background: var(--fondo);
+  color: #5A6B76;
+  font-size: 0.85rem;
+  text-align: center;
+  border: 2px solid transparent;
+}
+
+ol.etapas li::before {
+  content: counter(etapa) ". ";
+  font-weight: 700;
+}
+
+ol.etapas li.hecha {
+  background: #DFF2DF;
+  color: #1B5E20;
+}
+
+ol.etapas li.hecha::after {
+  content: " ✓";
+}
+
+ol.etapas li.siguiente {
+  border-color: var(--naranja);
+  color: var(--azul-oscuro);
+  font-weight: 700;
+}
+
+dialog input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.4rem;
+}
+
+button.btn-etapa {
+  background: var(--azul-oscuro);
+  border-color: var(--azul-oscuro);
+  color: #FFFFFF;
+}
+
+button.btn-etapa:hover {
+  background: var(--azul-innovacion);
+  border-color: var(--azul-innovacion);
+  color: var(--azul-oscuro);
+}
