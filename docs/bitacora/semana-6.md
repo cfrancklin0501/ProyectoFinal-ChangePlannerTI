@@ -25,7 +25,7 @@ Documentar cómo está construida la app y por qué, y poner en producción un s
 | Paso | Qué hace el usuario | Qué pasa |
 |---|---|---|
 | 1 | Inicia sesión como Aprobador o Administrador y abre *Cambios registrados* | Ve la semana actual y el contador |
-| 2 | Escribe parte de un RFC (por ejemplo `RFC-0`) | La tabla se reduce a los cambios cuyo RFC, ID de solicitud o ID-RFC-BI lo contienen |
+| 2 | Escribe parte de un RFC (por ejemplo `RFC-L`) | La tabla se reduce a los cambios cuyo RFC, ID de solicitud o ID-RFC-BI lo contienen |
 | 3 | Elige un área y la etapa *Registrado* | Se aplican todos los filtros a la vez |
 | 4 | Presiona *Ver todas las semanas* | Busca en todo el historial |
 | 5 | Escribe un código que no existe | "No hay cambios que coincidan con la búsqueda" |

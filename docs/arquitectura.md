@@ -96,7 +96,7 @@ sequenceDiagram
   participant R as PostgREST
   participant B as PostgreSQL
 
-  U->>P: Escribe "RFC-0" y elige un área
+  U->>P: Escribe "RFC-L" y elige un área
   P->>P: Limpia el texto y arma los filtros
   P->>C: listar("v_cambios_detalle?...&id_area=eq.X&and=(or(rfc.ilike...))")
   C->>R: GET + apikey + token del usuario
