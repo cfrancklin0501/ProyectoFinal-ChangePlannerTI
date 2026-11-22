@@ -27,7 +27,7 @@ index.html                 Inicio: tablero gerencial (todos los roles)
 login.html                 Iniciar sesión, crear cuenta, recuperar contraseña
 restablecer.html           Nueva contraseña (enlace del correo de recuperación)
 RegistrarCambio.html       Registrar cambio (Administrador)
-CambiosRegistrados.html    Lista de cambios (Aprobador; Administrador edita y elimina)
+CambiosRegistrados.html    Buscar y ver cambios (Aprobador; Administrador edita y elimina)
 CambiosSemanal.html        Resumen semanal y aprobación de gerencia
 Usuarios.html              Usuarios y roles (Administrador)
 Estilos.css                Estilos compartidos
@@ -51,5 +51,6 @@ docs/                      Documentación
 - [Mapa de historias](docs/mapa-historias.md) · [Backlog](docs/backlog-historias.md) · [Plan](docs/plan.md)
 - [Modelo de datos](docs/modelo-datos.md)
 - [Permisos](docs/permisos.md)
+- [Arquitectura](docs/arquitectura.md) · [Decisiones](docs/decisiones/)
 - [Pruebas con usuarios](docs/pruebas-usuarios.md) · [Issues de la prueba](docs/issues-semana-5.md)
-- Bitácoras: [semana 1](docs/bitacora/semana-1.md) · [semana 2](docs/bitacora/semana-2.md) · [semana 3](docs/bitacora/semana-3.md) · [semana 4](docs/bitacora/semana-4.md) · [semana 5](docs/bitacora/semana-5.md)
+- Bitácoras: [semana 1](docs/bitacora/semana-1.md) · [semana 2](docs/bitacora/semana-2.md) · [semana 3](docs/bitacora/semana-3.md) · [semana 4](docs/bitacora/semana-4.md) · [semana 5](docs/bitacora/semana-5.md) · [semana 6](docs/bitacora/semana-6.md)
