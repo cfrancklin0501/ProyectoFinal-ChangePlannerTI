@@ -46,6 +46,8 @@ Como usuario quiero buscar un cambio por su código, por área o por usuario, pa
 - **Dado** que combino filtros con la semana, **cuando** busco, **entonces** se aplican todos a la vez, y con **Limpiar filtros** vuelvo a ver todo.
 - **Dado** que ningún cambio coincide, **cuando** busco, **entonces** veo el mensaje "No hay cambios que coincidan con la búsqueda".
 
+**Estado:** corregido en la semana 6 (pull request `feature/busqueda-cambios`, se cierra con `Closes #N` en su descripción).
+
 ---
 
 ## 3. [Grave] Completar usuario y área a partir del código de empleado

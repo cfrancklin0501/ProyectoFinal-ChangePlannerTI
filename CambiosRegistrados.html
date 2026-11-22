@@ -17,13 +17,36 @@
 <main hidden>
   <section id="cambios">
     <h2>Cambios registrados</h2>
-    <form id="filtro-semana" class="filtros">
+    <!-- Búsqueda y filtros (semana 6, hallazgo H2 de la prueba con usuarios).
+         Los filtros se aplican en el servidor (PostgREST) y se combinan entre sí. -->
+    <form id="form-filtros" class="filtros" role="search" aria-label="Buscar cambios">
+      <p><label for="f-codigo">Código del cambio</label><br>
+        <input type="search" id="f-codigo" name="codigo" maxlength="60" autocomplete="off"
+               placeholder="RFC, ID solicitud o ID-RFC-BI" aria-describedby="ayuda-codigo"></p>
+      <p><label for="f-area">Área</label><br>
+        <select id="f-area" name="area">
+          <option value="">Todas las áreas</option>
+        </select></p>
+      <p><label for="f-usuario">Usuario</label><br>
+        <input type="search" id="f-usuario" name="usuario" maxlength="60" autocomplete="off"
+               placeholder="Usuario o código de empleado"></p>
+      <p><label for="f-etapa">Etapa</label><br>
+        <select id="f-etapa" name="etapa">
+          <option value="">Todas las etapas</option>
+          <option>Registrado</option>
+          <option>Aprobado en sesión</option>
+          <option>Ejecutado</option>
+        </select></p>
       <p><label for="semana">Semana</label><br>
         <input type="week" id="semana" name="semana"></p>
       <p class="filtros-botones">
+        <button type="submit" id="btn-buscar">Buscar</button>
         <button type="button" id="btn-todas">Ver todas las semanas</button>
+        <button type="button" id="btn-limpiar">Limpiar filtros</button>
       </p>
     </form>
+    <p id="ayuda-codigo" class="ayuda">Puedes escribir solo una parte del código. Los filtros se combinan entre sí.</p>
+    <p id="conteo" class="conteo" aria-live="polite"></p>
     <p id="mensaje" class="mensaje info" role="status" aria-live="polite" hidden></p>
     <table>
       <thead>
@@ -54,7 +77,7 @@
       </thead>
       <tbody>
         <tr>
-          <td colspan="18">Cargando…</td>
+          <td colspan="21">Cargando…</td>
         </tr>
       </tbody>
     </table>

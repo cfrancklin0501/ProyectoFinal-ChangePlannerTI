@@ -2,6 +2,8 @@
 // Aprobador: solo lectura (por defecto ve la semana actual). Administrador: además actualiza la etapa, edita y elimina.
 // Etapas (semana 5): 1 Registrado → 2 Aprobado en sesión → 3 Ejecutado (función avanzar_etapa).
 // La base vuelve a comprobar el rol en v_cambios_detalle, actualizar_cambio y eliminar_cambio.
+// Búsqueda (semana 6, hallazgo H2): código del cambio, área, usuario, etapa y semana. Los filtros
+// viajan como parámetros de PostgREST, así que la base filtra y sigue aplicando el permiso por rol.
 (function () {
   "use strict";
   const { listar, rpc, semanaActual, parseSemana, mostrarMensaje, ocultarMensaje, textoCelda, COLUMNAS_CAMBIOS } = window.CP;
@@ -10,7 +12,14 @@
   const cuerpo = document.querySelector("#cambios tbody");
   const msg = document.getElementById("mensaje");
   const inputSemana = document.getElementById("semana");
+  const formFiltros = document.getElementById("form-filtros");
+  const inputCodigo = document.getElementById("f-codigo");
+  const selectArea = document.getElementById("f-area");
+  const inputUsuario = document.getElementById("f-usuario");
+  const selectEtapa = document.getElementById("f-etapa");
+  const conteo = document.getElementById("conteo");
   let esAdmin = false;
+  let consultaActual = 0; // descarta respuestas viejas si el usuario escribe rápido
   let catalogos = null;
 
   const totalColumnas = () => COLUMNAS_CAMBIOS.length + (esAdmin ? 1 : 0);
@@ -33,15 +42,69 @@
     return b;
   }
 
-  async function cargar() {
-    mostrarMensaje(msg, "Cargando cambios…", "info");
+  // ---- Búsqueda y filtros ----
+  // Quita los caracteres que tienen significado en los filtros de PostgREST (comodines, comillas, paréntesis).
+  const limpiarTexto = (v) => (v || "").replace(/[*%"\\(),]/g, " ").trim().replace(/\s+/g, " ").slice(0, 60);
+  // Condición "contiene" sobre varias columnas, para usar dentro de and=(...)
+  const contieneEnAlguna = (columnas, texto) =>
+    "or(" + columnas.map((c) => c + '.ilike."*' + texto + '*"').join(",") + ")";
+
+  function leerFiltros() {
+    return {
+      codigo: limpiarTexto(inputCodigo.value),
+      area: selectArea.value,
+      usuario: limpiarTexto(inputUsuario.value),
+      etapa: selectEtapa.value,
+      semana: parseSemana(inputSemana.value)
+    };
+  }
+
+  const hayFiltros = (f) => !!(f.codigo || f.area || f.usuario || f.etapa || f.semana);
+
+  function rutaConsulta(f) {
     let ruta = "v_cambios_detalle?select=*&order=fecha_ingreso.desc,id.desc&limit=" + LIMITE;
-    const s = parseSemana(inputSemana.value);
-    if (s) ruta += "&semana_anio=eq." + s.anio + "&semana_num=eq." + s.semana;
+    if (f.semana) ruta += "&semana_anio=eq." + f.semana.anio + "&semana_num=eq." + f.semana.semana;
+    if (f.area) ruta += "&id_area=eq." + encodeURIComponent(f.area);
+    if (f.etapa) ruta += "&etapa=eq." + encodeURIComponent(f.etapa);
+    const condiciones = [];
+    if (f.codigo) condiciones.push(contieneEnAlguna(["rfc", "id_solicitud", "id_rfc_bi"], f.codigo));
+    if (f.usuario) condiciones.push(contieneEnAlguna(["usuario", "codigo_empleado"], f.usuario));
+    if (condiciones.length) ruta += "&and=" + encodeURIComponent("(" + condiciones.join(",") + ")");
+    return ruta;
+  }
+
+  function textoSinResultados(f) {
+    if (!hayFiltros(f)) return "Aún no hay cambios registrados.";
+    if (f.semana && (f.codigo || f.area || f.usuario || f.etapa)) {
+      return "No hay cambios que coincidan con la búsqueda en la semana elegida. Prueba con «Ver todas las semanas».";
+    }
+    if (f.semana) return "No hay cambios registrados en esa semana.";
+    return "No hay cambios que coincidan con la búsqueda.";
+  }
+
+  async function cargarAreas() {
     try {
-      const filas = await listar(ruta);
+      const areas = await listar("areas?select=codigo,nombre&order=nombre");
+      selectArea.append(...areas.map((a) => new Option(a.nombre + " (" + a.codigo + ")", a.codigo)));
+    } catch (e) {
+      // Sin catálogo de áreas la búsqueda sigue funcionando con los demás filtros
+      selectArea.disabled = true;
+    }
+  }
+
+  async function cargar() {
+    const numero = ++consultaActual;
+    const f = leerFiltros();
+    mostrarMensaje(msg, "Cargando cambios…", "info");
+    try {
+      const filas = await listar(rutaConsulta(f));
+      if (numero !== consultaActual) return; // llegó una búsqueda más nueva
+      conteo.textContent = filas.length
+        ? (filas.length === 1 ? "1 cambio encontrado" : filas.length + " cambios encontrados") +
+          (hayFiltros(f) ? " con los filtros aplicados." : ".")
+        : "";
       if (!filas.length) {
-        filaVacia(s ? "No hay cambios registrados en esa semana." : "Aún no hay cambios registrados.");
+        filaVacia(textoSinResultados(f));
         ocultarMensaje(msg);
         return;
       }
@@ -77,6 +140,8 @@
         ocultarMensaje(msg);
       }
     } catch (e) {
+      if (numero !== consultaActual) return;
+      conteo.textContent = "";
       filaVacia("No se pudieron cargar los cambios.");
       mostrarMensaje(msg, e.message, "error");
     }
@@ -260,14 +325,26 @@
     b.addEventListener("click", () => b.closest("dialog").close());
   }
 
-  inputSemana.addEventListener("change", cargar);
+  // Buscar: botón o Enter; las listas y la semana buscan al cambiar; el texto, al dejar de escribir.
+  let espera = null;
+  const buscarEnUnMomento = () => { clearTimeout(espera); espera = setTimeout(cargar, 400); };
+  formFiltros.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(espera); cargar(); });
+  for (const el of [inputSemana, selectArea, selectEtapa]) el.addEventListener("change", cargar);
+  for (const el of [inputCodigo, inputUsuario]) el.addEventListener("input", buscarEnUnMomento);
   document.getElementById("btn-todas").addEventListener("click", () => { inputSemana.value = ""; cargar(); });
+  document.getElementById("btn-limpiar").addEventListener("click", () => {
+    formFiltros.reset(); // deja todos los filtros vacíos, también la semana: se ven todos los cambios
+    clearTimeout(espera);
+    cargar();
+    inputCodigo.focus();
+  });
 
   window.AUTH.proteger(["Aprobador", "Administrador"]).then((perfil) => {
     if (!perfil) return;
     esAdmin = perfil.rol === "Administrador";
     for (const el of document.querySelectorAll(".solo-admin")) el.hidden = !esAdmin;
     inputSemana.value = semanaActual();
+    cargarAreas();
     cargar();
   });
 })();

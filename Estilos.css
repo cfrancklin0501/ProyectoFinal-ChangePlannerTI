@@ -524,6 +524,28 @@ header .btn-salir:hover {
   padding: 0.45rem 0.9rem;
 }
 
+/* Búsqueda en Cambios registrados (semana 6) */
+.filtros input[type="search"] {
+  min-width: 15rem;
+}
+
+.conteo {
+  margin: 0.25rem 0 0.5rem;
+  font-weight: 700;
+  color: var(--azul-oscuro);
+}
+
+.conteo:empty {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .filtros input[type="search"] {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
 /* Indicadores · index.html */
 .kpis {
   list-style: none;
