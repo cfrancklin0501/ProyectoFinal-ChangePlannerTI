@@ -50,7 +50,7 @@ Se pidió a la participante recorrer la app como lo haría en su trabajo:
 | Id | Hallazgo | Evidencia (resumen de lo que dijo) | Severidad | Frecuencia | Issue | Semana |
 |---|---|---|---|---|---|---|
 | H1 | **El registro no sigue las etapas del proceso.** Al registrar se piden resultado (Exitoso/Fallido), confirmación y firmas, pero eso se conoce después: primero se ingresa la solicitud, luego se revisa y aprueba en sesión (se manda a firmar) y al final se ejecuta y se documenta el resultado | "La confirmación y el estatus si fue exitoso o fallido no lo llenamos al momento del registro, eso se hace como un llenado posterior". Propuso "etapa uno, registro; etapa dos, cuando se revisó en sesión y fue aprobado; etapa tres, cuando ya fue ejecutado" | **Bloqueante** | 1/1 (2 menciones) | `#[N]` | 5 · **corregido** |
-| H2 | **No se puede buscar en Cambios registrados.** Hay que recorrer la tabla para encontrar un cambio | Pidió "un filtro por código de cambio, porque hay gente que se conoce su código", y también por área o por usuario | **Grave** | 1/1 (1 mención) | `#[N]` | 6 |
+| H2 | **No se puede buscar en Cambios registrados.** Hay que recorrer la tabla para encontrar un cambio | Pidió "un filtro por código de cambio, porque hay gente que se conoce su código", y también por área o por usuario | **Grave** | 1/1 (1 mención) | `#[N]` | 6 · **corregido** |
 | H3 | **El código de empleado no completa los datos del solicitante.** Hay que escribir usuario y elegir área a mano aunque el empleado ya existe | "Si yo pongo mi código de empleado me va a reconocer cuál es mi nombre y mi área… eso se podría llenar en automático" | **Grave** | 1/1 (1 mención) | `#[N]` | 7 |
 
 ## Corrección del bloqueante H1
@@ -64,6 +64,10 @@ Se implementó el **registro por etapas** (migración `supabase/migrations/20261
 El servidor hace cumplir el orden: no se puede saltar etapas, el resultado solo existe en la etapa 3, y gerencia no puede aprobar una semana mientras tenga cambios sin ejecutar.
 
 **Verificación en producción:** `[COMPLETAR después de publicar: registrar un cambio, pasarlo a etapa 2 y 3, y adjuntar captura]`.
+
+## Corrección del hallazgo grave H2 (semana 6)
+
+En **Cambios registrados** hay ahora un buscador: código del cambio (RFC, ID de solicitud o ID-RFC-BI, aunque se escriba solo una parte), área, usuario o código de empleado, etapa y semana. Los filtros se combinan, se aplican en el servidor (la base sigue comprobando el rol) y **Limpiar filtros** vuelve a mostrar todo. Si nada coincide aparece "No hay cambios que coincidan con la búsqueda". Detalle en [bitacora/semana-6.md](bitacora/semana-6.md).
 
 ## Decisión sobre la hipótesis
 
@@ -80,7 +84,7 @@ El servidor hace cumplir el orden: no se puede saltar etapas, el resultado solo 
 
 | Semana | Trabajo | Origen |
 |---|---|---|
-| 6 | Búsqueda y filtros en Cambios registrados (código de cambio / RFC / ID solicitud, área, usuario) | H2 · Grave |
+| 6 | Búsqueda y filtros en Cambios registrados (código de cambio / RFC / ID solicitud, área, usuario) — **hecho** | H2 · Grave |
 | 7 | Autocompletar usuario y área a partir del código de empleado | H3 · Grave |
 | 8 | Segunda ronda de pruebas: Aprobador y Administrador, midiendo el tiempo del resumen y la aprobación | Hipótesis abierta |
 | 9 | Corregir lo que salga de la segunda ronda y cierre | Ronda 2 |
